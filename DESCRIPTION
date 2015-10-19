@@ -8,8 +8,8 @@ Description: A lose collection of functions to simplify data analyses
 Depends: R (>= 3.0),
          ncdf4,
          reshape2,
+         maps
 Imports: colorspace,
-         maps,
          geocors
 License: GPL-3
 LazyData: true
