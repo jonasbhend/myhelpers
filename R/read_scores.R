@@ -53,7 +53,7 @@ read_scores <- function(scores=c('EnsCorr', 'FairRpss'), indices='tas',
       if (length(infile) == 1){
         nc <- nc_open(infile)
         if (skill$score[i] %in% names(nc$var)){
-          dtmp <- try(ncvar_get(nc, as.character(skill$score[i]))[,,skill$lead[i]], silent=TRUE)
+          dtmp <- try(ncvar_get(nc, as.character(skill$score[i]))[,,as.numeric(skill$lead[i])], silent=TRUE)
           if (class(dtmp) != 'try-error'){
             lolaname <- sapply(nc$var[[as.character(skill$score[i])]]$dim, function(x) x$name)[1:2]
             lon2 <- rep(nc$dim[[lolaname[1]]]$vals, nc$dim[[lolaname[2]]]$len)
