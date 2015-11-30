@@ -1,8 +1,8 @@
 Package: myhelpers
 Title: Set of Tools for Often Performed Tasks
-Date: 2015-11-02
-Version: 0.0.0.9001
-Authors@R: person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
+Date: "`r Sys.Date()`"
+Version: 0.0.0.9003
+Authors@R: person("Jonas", "Bhend", email="jonas.bhend@gmx.ch", role = c("aut", "cre"))
 Description: A lose collection of functions to simplify data analyses and
     plotting. Most of the functions will be fairly specific to the currently
     used compute environment and thus probably not of greater use to the
@@ -11,9 +11,11 @@ Depends:
     R (>= 3.0),
     ncdf4,
     reshape2,
-    maps
+    maps,
+    lubridate
 Imports:
     colorspace,
     geocors
 License: GPL-3
 LazyData: true
+Suggests: testthat

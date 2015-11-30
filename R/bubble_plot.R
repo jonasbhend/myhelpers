@@ -15,8 +15,8 @@
 #'   dimensions forecast categories x lon x lat
 #' @param colours matrix of colours for breaks (see details)
 #' @param breaks matrix of breaks (see details)
-#' @param skill three-dimensional array of forecast skill corresponding to
-#'   forecast array
+#' @param skill two or three-dimensional array of forecast skill with dimenisions
+#'   lon x lat (2d) or forecast cat. x lon x lat (3d)
 #' @param type specify whether skill information should be represented by grid
 #'   point area (\code{type = "area"}, the default) or grid point width and
 #'   height (\code{type = "edge"}).
@@ -71,6 +71,12 @@ map_forecast <- function(lon, lat, x, colours=NULL, breaks=NULL, skill=NULL,
   if (is.null(skill)){
     if (plot) image(lon, lat, xplot, col=xcols, breaks=xbreaks, ...)
   } else {
+
+    ## allow for univariate skill metrices to be used (e.g. RPSS)
+    if (all(dim(skill) == dim(x)[-1])){
+      skill <- aperm(array(skill, c(dim(skill), nrow(x))), c(3,1,2))
+    }
+
     stopifnot(dim(skill) == dim(x))
     if (plot) image(lon, lat, xplot*NA, col=xcols, breaks=xbreaks, ...)
 
