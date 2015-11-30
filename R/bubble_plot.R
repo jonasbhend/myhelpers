@@ -13,7 +13,7 @@
 #' @param lat latitutdes of forecast array
 #' @param x three-dimensional array of forecast probabilities (in percent) with
 #'   dimensions forecast categories x lon x lat
-#' @param colours matrix of colours for breaks (see details)
+#' @param color matrix of color for breaks (see details)
 #' @param breaks matrix of breaks (see details)
 #' @param skill two or three-dimensional array of forecast skill with dimenisions
 #'   lon x lat (2d) or forecast cat. x lon x lat (3d)
@@ -24,7 +24,7 @@
 #'   to enquire parameters?
 #' @param ... additional parameters passed to \code{\link[graphics]{image}}
 #'
-#' @details Colours and breaks for the forecast are supplied as a matrix with
+#' @details color and breaks for the forecast are supplied as a matrix with
 #'   the number of columns corresponding to the forecast categories. If no
 #'   breaks are supplied, breaks are set automatically with the lowest
 #'   probability at \code{ceiling(1/n*10)*10}. If category forecasts with
@@ -33,7 +33,7 @@
 #'
 #' @keywords utilities
 #' @export
-map_forecast <- function(lon, lat, x, colours=NULL, breaks=NULL, skill=NULL,
+map_forecast <- function(lon, lat, x, color=NULL, breaks=NULL, skill=NULL,
                          type=c('area', 'edge'), plot=TRUE, ...){
 
   type <- match.arg(type)
@@ -45,15 +45,15 @@ map_forecast <- function(lon, lat, x, colours=NULL, breaks=NULL, skill=NULL,
   }
   nbreaks <- nrow(breaks)
 
-  ## figure out colours
-  if (is.null(colours)){
-    colours <- outer(seq(1, nbreaks), 1:ncat, function(x,y) {
+  ## figure out color
+  if (is.null(color)){
+    color <- outer(seq(1, nbreaks), 1:ncat, function(x,y) {
       hcl(rev(seq(10,240,length=ncat))[y],
           l=seq(90,20,length=nbreaks)[x],
           c=seq(30,90,length=nbreaks)[x])
     })
-    colours[1,] <- grey(0.9)
-    if (ncat %% 2 == 1) colours[,ncat %/% 2 + 1] <- grey(seq(0.9, 0.2, length=nbreaks))
+    color[1,] <- grey(0.9)
+    if (ncat %% 2 == 1) color[,ncat %/% 2 + 1] <- grey(seq(0.9, 0.2, length=nbreaks))
   }
 
   ## adjust for plotting of colour scales
@@ -62,7 +62,7 @@ map_forecast <- function(lon, lat, x, colours=NULL, breaks=NULL, skill=NULL,
   } else {
     xbreaks <- unique(c(0, breaks))
   }
-  xcols <- c(colours)
+  xcols <- c(color)
   stopifnot(length(xbreaks) == length(xcols) + 1)
 
   ## find dominant forecast category
@@ -73,8 +73,10 @@ map_forecast <- function(lon, lat, x, colours=NULL, breaks=NULL, skill=NULL,
   } else {
 
     ## allow for univariate skill metrices to be used (e.g. RPSS)
-    if (all(dim(skill) == dim(x)[-1])){
-      skill <- aperm(array(skill, c(dim(skill), nrow(x))), c(3,1,2))
+    if (length(dim(skill)) == 2){
+      if (all(dim(skill) == dim(x)[-1])){
+        skill <- aperm(array(skill, c(dim(skill), nrow(x))), c(3,1,2))
+      }
     }
 
     stopifnot(dim(skill) == dim(x))
@@ -111,7 +113,7 @@ map_forecast <- function(lon, lat, x, colours=NULL, breaks=NULL, skill=NULL,
     if (plot) polygon(c(lon.edges), c(lat.edges), col=xall$colour, border=NA)
   }
 
-  outlist <- list(breaks=breaks, colours=colours, type=type)
+  outlist <- list(breaks=breaks, color=color, type=type)
   if (!is.null(skill)) {
     outlist$skill <- xskill
     outlist$londiff <- londiff
@@ -126,7 +128,7 @@ map_forecast <- function(lon, lat, x, colours=NULL, breaks=NULL, skill=NULL,
 #'   normal, above normal)
 #'
 #' @export
-bubble_plot <- function(lon, lat, x, colours=NULL, breaks=NULL,
+bubble_plot <- function(lon, lat, x, color=NULL, breaks=NULL,
                         skill=NULL, type='area', labels=NULL, ...){
   ncat <- nrow(x)
   layout(matrix(c(rep(ncat + 1, ncat), seq(1,ncat)), 2, ncat, byrow=TRUE),
@@ -135,7 +137,7 @@ bubble_plot <- function(lon, lat, x, colours=NULL, breaks=NULL,
   ## plot the main plot
   par(mar=rep(0.2, 4))
   tmp <- map_forecast(lon=lon, lat=lat, x=x,
-                      colours=colours, breaks=breaks,
+                      color=color, breaks=breaks,
                       skill=skill, type=type, axes=F,
                       xlab="", ylab="", plot=FALSE, ...)
 
@@ -150,14 +152,14 @@ bubble_plot <- function(lon, lat, x, colours=NULL, breaks=NULL,
   par(mar=c(2,0.2,2,0.2))
   for (i in 1:ncat){
     colourbar(levels=unique(c(0,tmp$breaks[,i], 100)),
-              colours=tmp$colours[,i], units='%')
+              color=tmp$color[,i], units='%')
     axis(3, at=0.5, labels[i], hadj=0, font=2, tick=F, line=-0.5)
   }
 
   ## plot the main plot
   par(mar=rep(0.2, 4))
   tmp <- map_forecast(lon=lon, lat=lat, x=x,
-                      colours=colours, breaks=breaks,
+                      color=color, breaks=breaks,
                       skill=skill, type=type, axes=F,
                       xlab="", ylab="", ...)
   box()
