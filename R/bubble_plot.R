@@ -93,7 +93,8 @@ map_forecast <- function(lon, lat, x, color=NULL, breaks=NULL, skill=NULL,
     xall <- data.frame(lon=rep(lon, ncol(xskill)),
                        lat=rep(lat, each=nrow(xskill)),
                        colour=xcols[as.numeric(cut(xplot, xbreaks))],
-                       skill=c(xskill))
+                       skill=c(xskill),
+                       stringsAsFactors=FALSE)
 
     ## only plot points with non-zero skill
     xall <- subset(xall, !is.na(skill) & skill > 0)
