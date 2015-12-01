@@ -6,14 +6,17 @@
 \alias{skillLegend}
 \title{Plot forecasts (with forecast skill)}
 \usage{
-map_forecast(lon, lat, x, colours = NULL, breaks = NULL, skill = NULL,
+map_forecast(lon, lat, x, color = NULL, breaks = NULL, skill = NULL,
   type = c("area", "edge"), plot = TRUE, ...)
 
-bubble_plot(lon, lat, x, colours = NULL, breaks = NULL, skill = NULL,
+bubble_plot(lon, lat, x, color = NULL, breaks = NULL, skill = NULL,
   type = "area", labels = NULL, ...)
 
 skillLegend(args, legend.pos = "bottomleft", width = 0.2, height = 0.15,
-  inset = 0.01, skill.levs = c(0.2, 0.5, 0.8), skill.col = "grey")
+  inset = 0.01, skill.levs = c(0.2, 0.5, 0.8), skill.col = "grey",
+  byrow = TRUE, bbox = FALSE, font.main = par("font.main"),
+  cex.main = par("cex.main"), cex = par("cex.lab"),
+  font = par("font.lab"))
 }
 \arguments{
 \item{lon}{longitudes of the forecast array}
@@ -23,12 +26,12 @@ skillLegend(args, legend.pos = "bottomleft", width = 0.2, height = 0.15,
 \item{x}{three-dimensional array of forecast probabilities (in percent) with
 dimensions forecast categories x lon x lat}
 
-\item{colours}{matrix of colours for breaks (see details)}
+\item{color}{matrix of color for breaks (see details)}
 
 \item{breaks}{matrix of breaks (see details)}
 
-\item{skill}{three-dimensional array of forecast skill corresponding to
-forecast array}
+\item{skill}{two or three-dimensional array of forecast skill with dimenisions
+lon x lat (2d) or forecast cat. x lon x lat (3d)}
 
 \item{type}{specify whether skill information should be represented by grid
 point area (\code{type = "area"}, the default) or grid point width and
@@ -56,6 +59,18 @@ and londiff and latdiff vectors}
 \item{skill.levs}{skill levels to be plotted}
 
 \item{skill.col}{colour for skill bubbles}
+
+\item{byrow}{logical, should skill labels be shown in one row?}
+
+\item{bbox}{logcial, should bounding box be added?}
+
+\item{font.main}{font of the legend header}
+
+\item{cex.main}{character expansion of legend header}
+
+\item{cex}{character expansion of legend text}
+
+\item{font}{font of legend text}
 }
 \description{
 Plot category forecasts with shading according to the dominant
@@ -64,7 +79,7 @@ Plot category forecasts with shading according to the dominant
   corresponding to forecast skill), \code{bubble_plot} also plots the legends.
 }
 \details{
-Colours and breaks for the forecast are supplied as a matrix with
+color and breaks for the forecast are supplied as a matrix with
   the number of columns corresponding to the forecast categories. If no
   breaks are supplied, breaks are set automatically with the lowest
   probability at \code{ceiling(1/n*10)*10}. If category forecasts with

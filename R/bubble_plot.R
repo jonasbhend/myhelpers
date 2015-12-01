@@ -176,6 +176,12 @@ bubble_plot <- function(lon, lat, x, color=NULL, breaks=NULL,
 #' @param inset additional spacing to offset legend from border
 #' @param skill.levs skill levels to be plotted
 #' @param skill.col colour for skill bubbles
+#' @param byrow logical, should skill labels be shown in one row?
+#' @param bbox logcial, should bounding box be added?
+#' @param font.main font of the legend header
+#' @param cex.main character expansion of legend header
+#' @param cex character expansion of legend text
+#' @param font font of legend text
 #'
 #' @examples
 #' \dontrun{
@@ -187,32 +193,40 @@ bubble_plot <- function(lon, lat, x, color=NULL, breaks=NULL,
 #' @export
 skillLegend <- function(args, legend.pos="bottomleft",
                         width=0.2, height=0.15, inset=0.01,
-                        skill.levs=c(0.2, 0.5, 0.8), skill.col='grey'){
+                        skill.levs=c(0.2, 0.5, 0.8), skill.col='grey',
+                        byrow=TRUE, bbox=FALSE,
+                        font.main=par("font.main"), cex.main=par("cex.main"),
+                        cex=par("cex.lab"), font=par("font.lab")){
   pusr <- par("usr")
-  pusr[1:2] <- pusr[1:2] + c(1,-1)*inset*diff(pusr[1:2])
-  pusr[3:4] <- pusr[3:4] + c(1,-1)*inset*diff(pusr[3:4])
   bwidth <- diff(pusr[1:2])*width
   bheight <- diff(pusr[3:4])*height
   if (length(grep("bottom", legend.pos)) == 1){
-    ypos <- pusr[3] + c(0, bheight)
+    ypos <- pusr[3] + c(0, bheight) + inset*diff(pusr[3:4])
   } else if (length(grep("top", legend.pos)) == 1) {
-    ypos <- pusr[4] - c(bheight, 0)
+    ypos <- pusr[4] - c(bheight, 0) - inset * diff(pusr[3:4])
   } else {
     ypos <- mean(pusr[3:4]) + c(-0.5, 0.5)*bheight
   }
+  ypos <- sort(ypos)
   if (length(grep("left", legend.pos)) == 1){
-    xpos <- pusr[1] + c(0, bwidth)
+    xpos <- pusr[1] + c(0, bwidth) + inset*diff(pusr[1:2])
   } else if (length(grep("right", legend.pos)) == 1){
-    xpos <- pusr[2] - c(bwidth, 0)
+    xpos <- pusr[2] - c(bwidth, 0) - inset*diff(pusr[1:2])
   } else {
     xpos <- mean(pusr[1:2]) + c(-0.5,0.5)*bwidth
   }
-  rect(xpos[1], ypos[1], xpos[2], ypos[2], col='white', border='black')
+  xpos <- sort(xpos)
+  if (bbox) rect(xpos[1], ypos[1], xpos[2], ypos[2], col='white', border='black')
 
   ## add in skill bubbles
   nlevs <- length(skill.levs)
-  yskill <- ypos[1] + diff(ypos)*(1:nlevs / (nlevs + 2))
-  xskill <- rep(xpos[1] + 0.1*diff(xpos), nlevs)
+  if (byrow){
+    yskill <- rep(ypos[1] + diff(ypos) / 3, nlevs)
+    xskill <- xpos[1] + bwidth* seq(0.1, 1.1, length=nlevs+1)[1:nlevs]
+  } else {
+    yskill <- ypos[1] + diff(ypos)*(1:nlevs / (nlevs + 2))
+    xskill <- rep(xpos[1] + 0.1*diff(xpos), nlevs)
+  }
   ## select skill representation type
   if (args$type == "area"){
     expskill <- 0.5
@@ -223,7 +237,14 @@ skillLegend <- function(args, legend.pos="bottomleft",
   y.edges <- outer(rep(0, 6), yskill, '+') + outer(args$latdiff, skill.levs**expskill, '*')
 
   polygon(x.edges, y.edges, col=skill.col, border=NA)
-  text(min(x.edges, na.rm=T), ypos[1] + diff(ypos)*(nlevs + 1) / (nlevs + 2),
-       "Skill of forecast", adj=c(0, 0.5))
-  text(xskill + 0.1*diff(xpos), yskill, skill.levs, adj=c(0, 0.5))
+  if (byrow){
+    text(mean(xpos), max(yskill) + diff(ypos)*1.5/3,
+         "Skill of forecast", adj=c(0.5, 0.5), cex=cex.main, font=font.main)
+  } else {
+    text(min(x.edges, na.rm=T), ypos[1] + diff(ypos)*(nlevs + 1) / (nlevs + 2),
+         "Skill of forecast", adj=c(0, 0.5), cex=cex, font=font)
+
+  }
+
+  text(xskill + 2*max(t(x.edges) - xskill, na.rm=T), yskill, skill.levs, adj=c(0, 0.5))
 }
