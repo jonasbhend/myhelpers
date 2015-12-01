@@ -1,7 +1,7 @@
 Package: myhelpers
 Title: Set of Tools for Often Performed Tasks
 Date: "`r Sys.Date()`"
-Version: 0.0.0.9005
+Version: 0.0.0.9006
 Authors@R: person("Jonas", "Bhend", email="jonas.bhend@gmx.ch", role = c("aut", "cre"))
 Description: A lose collection of functions to simplify data analyses and
     plotting. Most of the functions will be fairly specific to the currently
