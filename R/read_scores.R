@@ -11,7 +11,8 @@
 #' @param granularities character vector of temporal resolutions
 #' @param ccrs logical should recalibrated indices be used?
 #' @param detrends logical should detrended series be used?
-#' @param leads index of lead times
+#' @param leads index of lead times, or a character string specifying
+#' what lead times to use (currently only \code{"last"} is supported)
 #' @param reference name of reference model against which the forecast skill
 #' is evaluated. If set to \code{NULL} (the default), forecasts are
 #' verified against a climatological forecast.
@@ -66,8 +67,15 @@ read_scores <- function(models='ecmwf-system4',
       if (length(infile) == 1){
         nc <- nc_open(infile)
         if (skill$score[i] %in% names(nc$var)){
-          dtmp <- try(ncvar_get(nc, as.character(skill$score[i]))[,,as.numeric(skill$lead[i])], silent=TRUE)
+          dtmp <- try(ncvar_get(nc, as.character(skill$score[i])), silent=TRUE)
           if (class(dtmp) != 'try-error'){
+            if (skill$lead[i] == 'last') {
+              lead <- dim(dtmp)[3]
+              print(lead)
+            } else {
+              lead <- as.numeric(as.character(skill$lead))
+            }
+            dtmp <- dtmp[,,lead]
             lolaname <- sapply(nc$var[[as.character(skill$score[i])]]$dim, function(x) x$name)[1:2]
             lon2 <- rep(nc$dim[[lolaname[1]]]$vals, nc$dim[[lolaname[2]]]$len)
             lat2 <- rep(nc$dim[[lolaname[2]]]$vals, each=nc$dim[[lolaname[1]]]$len)
