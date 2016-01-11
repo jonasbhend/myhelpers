@@ -54,12 +54,12 @@ read_scores <- function(models='ecmwf-system4',
       filepaths <- paste(dpath, 'skill_scores', grid, skill$granularity, skill$index, sep='/')
       filenames <- paste0('^', skill$index, c('', '_detrend')[skill$detrend*1 + 1],
                           c('', '_CCR')[skill$ccr*1 + 1], '_',
-                          skill$method, '_', skill$model, '_.*initmon', skill$initmon, '.nc$')
+                          skill$method, '_.*', skill$model, '_vs_.*initmon', skill$initmon, '.nc$')
     } else {
       filepaths <- paste(dpath, 'skill_against_reference', grid, skill$granularity, skill$index, sep='/')
       filenames <- paste0('^', skill$index, c('', '_detrend')[skill$detrend*1 + 1],
                           c('', '_CCR')[skill$ccr*1 + 1], '_',
-                          skill$method, '_', skill$model, '-ref-', reference, '_.*initmon', skill$initmon, '.nc$')
+                          skill$method, '_.*', skill$model, '-ref-', reference, '_vs_.*_.*initmon', skill$initmon, '.nc$')
     }
     ## read in scores
     for (i in 1:nrow(skill)){
