@@ -3,6 +3,7 @@
 export(addWatermark)
 export(bubble_plot)
 export(colourbar)
+export(filled_contour)
 export(map)
 export(map_forecast)
 export(nc_time)

@@ -4,15 +4,18 @@
 \alias{read_scores}
 \title{read_scores}
 \usage{
-read_scores(scores = c("EnsCorr", "FairRpss"), indices = "tas",
-  methods = "none", initmonths = "05", grids = "global2",
-  granularities = "seasonal", ccrs = c(FALSE, TRUE), detrends = FALSE,
-  leads = 2, dpath = "/store/msclim/bhendj/EUPORIAS")
+read_scores(models = "ecmwf-system4", scores = c("EnsCorr", "FairRpss"),
+  indexes = "tas", methods = "none", initmonths = "05",
+  grids = "global2", granularities = "seasonal", ccrs = c(FALSE, TRUE),
+  detrends = FALSE, leads = 2, reference = NULL,
+  dpath = "/store/msclim/bhendj/EUPORIAS")
 }
 \arguments{
+\item{models}{character vector of the names of forecasting systems}
+
 \item{scores}{character vector of skill scores to be read}
 
-\item{indices}{character vector of variable names}
+\item{indexes}{character vector of variable names}
 
 \item{methods}{character vector of bias correction methods}
 
@@ -27,6 +30,10 @@ read_scores(scores = c("EnsCorr", "FairRpss"), indices = "tas",
 \item{detrends}{logical should detrended series be used?}
 
 \item{leads}{index of lead times}
+
+\item{reference}{name of reference model against which the forecast skill
+is evaluated. If set to \code{NULL} (the default), forecasts are
+verified against a climatological forecast.}
 
 \item{dpath}{head of directory tree}
 }
