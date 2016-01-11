@@ -29,7 +29,8 @@ read_scores(models = "ecmwf-system4", scores = c("EnsCorr", "FairRpss"),
 
 \item{detrends}{logical should detrended series be used?}
 
-\item{leads}{index of lead times}
+\item{leads}{index of lead times, or a character string specifying
+what lead times to use (currently only \code{"last"} is supported)}
 
 \item{reference}{name of reference model against which the forecast skill
 is evaluated. If set to \code{NULL} (the default), forecasts are
