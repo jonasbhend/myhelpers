@@ -17,6 +17,7 @@
 #' is evaluated. If set to \code{NULL} (the default), forecasts are
 #' verified against a climatological forecast.
 #' @param dpath head of directory tree
+#' @param cleanup logical, should only non-missing combinations be retained?
 #'
 #' @keywords util
 #' @export
@@ -26,7 +27,7 @@ read_scores <- function(models='ecmwf-system4',
                         granularities="seasonal", ccrs=c(FALSE, TRUE),
                         detrends=FALSE, leads=2,
                         reference=NULL,
-                        dpath="/store/msclim/bhendj/EUPORIAS"){
+                        dpath="/store/msclim/bhendj/EUPORIAS", cleanup=FALSE){
   stopifnot(file.exists(dpath))
   skill.long <- list()
   ## do the analysis by grid
@@ -71,7 +72,6 @@ read_scores <- function(models='ecmwf-system4',
           if (class(dtmp) != 'try-error'){
             if (skill$lead[i] == 'last') {
               lead <- dim(dtmp)[3]
-              print(lead)
             } else {
               lead <- as.numeric(as.character(skill$lead))
             }
@@ -90,6 +90,12 @@ read_scores <- function(models='ecmwf-system4',
         nc_close(nc)
       }
     } # end of loop on rows of skill
+
+    if (cleanup){
+      ## remove rows of skill with all values missing
+      allmissing <- apply(skill[,ncol(skill) - rev(seq(lsm) - 1)], 1, function(x) all(is.na(x)))
+      skill <- skill[-which(allmissing), ]
+    }
 
     skill.long[[grid]] <- melt(skill, id.vars=skillnames, variable.name='gridID')
     skill.long[[grid]][['gridID']] <- as.numeric(as.character(skill.long[[grid]][['gridID']]))

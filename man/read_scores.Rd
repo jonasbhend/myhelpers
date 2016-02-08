@@ -8,7 +8,7 @@ read_scores(models = "ecmwf-system4", scores = c("EnsCorr", "FairRpss"),
   indexes = "tas", methods = "none", initmonths = "05",
   grids = "global2", granularities = "seasonal", ccrs = c(FALSE, TRUE),
   detrends = FALSE, leads = 2, reference = NULL,
-  dpath = "/store/msclim/bhendj/EUPORIAS")
+  dpath = "/store/msclim/bhendj/EUPORIAS", cleanup = FALSE)
 }
 \arguments{
 \item{models}{character vector of the names of forecasting systems}
@@ -37,6 +37,8 @@ is evaluated. If set to \code{NULL} (the default), forecasts are
 verified against a climatological forecast.}
 
 \item{dpath}{head of directory tree}
+
+\item{cleanup}{logical, should only non-missing combinations be retained?}
 }
 \description{
 Read skill scores to data frame
