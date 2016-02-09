@@ -51,16 +51,19 @@ read_scores <- function(models='ecmwf-system4',
     skill <- cbind(skill, matrix(NA, nrow(skill), length(lsm)))
 
     ## convert to filename and filepath
+    ## use temporary method string to handle all cases
+    mstring <- paste0(skill$method, '_[0-9].*')
+    mstring[grep('none', mstring)] <- paste0(skill$method[grep('none', mstring)], '_.*')
     if (is.null(reference)){
       filepaths <- paste(dpath, 'skill_scores', grid, skill$granularity, skill$index, sep='/')
       filenames <- paste0('^', skill$index, c('', '_detrend')[skill$detrend*1 + 1],
                           c('', '_CCR')[skill$ccr*1 + 1], '_',
-                          skill$method, '_[0-9].*', skill$model, '_vs_.*initmon', skill$initmon, '.nc$')
+                          mstring, skill$model, '_vs_.*initmon', skill$initmon, '.nc$')
     } else {
       filepaths <- paste(dpath, 'skill_against_reference', grid, skill$granularity, skill$index, sep='/')
       filenames <- paste0('^', skill$index, c('', '_detrend')[skill$detrend*1 + 1],
                           c('', '_CCR')[skill$ccr*1 + 1], '_',
-                          skill$method, '_[0-9].*', skill$model, '-ref-', reference, '_vs_.*_.*initmon', skill$initmon, '.nc$')
+                          mstring, skill$model, '-ref-', reference, '_vs_.*_.*initmon', skill$initmon, '.nc$')
     }
     ## read in scores
     for (i in 1:nrow(skill)){
