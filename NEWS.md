@@ -1,3 +1,7 @@
+## myhelpers 0.0.0.9014
+
+* restructure `read_scores` to minimize file open and close operations
+
 ## myhelpers 0.0.0.9012
 
 * added cleaning up of rows with all values missing `read_scores`

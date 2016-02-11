@@ -40,7 +40,7 @@ read_scores <- function(models='ecmwf-system4',
     lolaname <- sapply(nc$var[['FR_LAND']]$dim, function(x) x$name)[1:2]
     lon <- rep(nc$dim[[lolaname[1]]]$vals, nc$dim[[lolaname[2]]]$len)
     lat <- rep(nc$dim[[lolaname[2]]]$vals, each=nc$dim[[lolaname[1]]]$len)
-    nc_close(nc)
+    nc <- nc_close(nc)
 
     skill <- expand.grid(model=models, index=indexes, method=methods,
                          initmon=initmonths,
@@ -66,10 +66,19 @@ read_scores <- function(models='ecmwf-system4',
                           mstring, skill$model, '-ref-', reference, '_vs_.*_.*initmon', skill$initmon, '.nc$')
     }
     ## read in scores
-    for (i in 1:nrow(skill)){
+    oldinfile <- "0"
+    for (i in order(paste(filepaths, filenames, sep='/'))){
       infile <- list.files(filepaths[i], filenames[i], full.names=TRUE)
       if (length(infile) == 1){
-        nc <- nc_open(infile)
+        ## check whether infile is already openend
+        if (infile == oldinfile){
+          nc <- ncold
+        } else {
+          if (!is.null(names(nc))) nc <- nc_close(nc)
+          nc <- nc_open(infile)
+        }
+        oldinfile <- infile
+        ncold <- nc
         if (skill$score[i] %in% names(nc$var)){
           dtmp <- try(ncvar_get(nc, as.character(skill$score[i])), silent=TRUE)
           if (class(dtmp) != 'try-error'){
@@ -90,9 +99,9 @@ read_scores <- function(models='ecmwf-system4',
             }
           }
         }
-        nc_close(nc)
       }
     } # end of loop on rows of skill
+    if (!is.null(names(nc)))  nc <- nc_close(nc)
 
     if (cleanup){
       ## remove rows of skill with all values missing
