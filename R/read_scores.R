@@ -46,30 +46,41 @@ read_scores <- function(models='ecmwf-system4',
                          initmon=initmonths,
                          score=scores, granularity=granularities, ccr=ccrs,
                          detrend=detrends, lead=leads)
+    skill$method <- as.character(skill$method)
     skill$grid <- grid
     skillnames <- names(skill)
     skill <- cbind(skill, matrix(NA, nrow(skill), length(lsm)))
 
     ## convert to filename and filepath
     ## use temporary method string to handle all cases
-    mstring <- paste0(skill$method, '_[0-9].*')
-    mstring[grep('none', mstring)] <- paste0(skill$method[grep('none', mstring)], '_.*')
+    ## check whether full method string is provided, else
+    mstring <- skill$method
+    iind <- setdiff(seq(along=mstring), grep("_[0-9]*-[0-9]*_", mstring))
+    if (length(iind) > 0){
+      mstring[iind] <- paste0(skill$method[iind], '_[0-9].*')
+      mstring[grep('none', mstring)] <- skill$method[grep("none", mstring)]
+    }
     if (is.null(reference)){
       filepaths <- paste(dpath, 'skill_scores', grid, skill$granularity, skill$index, sep='/')
       filenames <- paste0('^', skill$index, c('', '_detrend')[skill$detrend*1 + 1],
                           c('', '_CCR')[skill$ccr*1 + 1], '_',
-                          mstring, skill$model, '_vs_.*initmon', skill$initmon, '.nc$')
+                          mstring, '_', skill$model, '_vs_.*initmon', skill$initmon, '.nc$')
     } else {
       filepaths <- paste(dpath, 'skill_against_reference', grid, skill$granularity, skill$index, sep='/')
       filenames <- paste0('^', skill$index, c('', '_detrend')[skill$detrend*1 + 1],
                           c('', '_CCR')[skill$ccr*1 + 1], '_',
-                          mstring, skill$model, '-ref-', reference, '_vs_.*_.*initmon', skill$initmon, '.nc$')
+                          mstring, '_', skill$model, '-ref-', reference, '_vs_.*_.*initmon', skill$initmon, '.nc$')
     }
+
     ## read in scores
     oldinfile <- "0"
     for (i in order(paste(filepaths, filenames, sep='/'))){
       infile <- list.files(filepaths[i], filenames[i], full.names=TRUE)
       if (length(infile) == 1){
+        ## deparse infile for method string
+        method <- gsub("detrend_", "", gsub("CCR_", "", gsub(paste0(skill$index[i], '_'), '', gsub(paste0('_', skill$model[i], '.*'), '', basename(infile)))))
+        skill$method[i] <- method
+
         ## check whether infile is already openend
         if (infile == oldinfile){
           nc <- ncold
@@ -116,6 +127,8 @@ read_scores <- function(models='ecmwf-system4',
     skill.long[[grid]][['lon']] <- c(lon)[skill.long[[grid]][['gridID']]]
     skill.long[[grid]][['lat']] <- c(lat)[skill.long[[grid]][['gridID']]]
     skill.long[[grid]][['reference']] <- reference
+    ## convert method string to factors
+    skill.long[[grid]][['method']] <- factor(skill.long[[grid]][['method']], unique(skill.long[[grid]][['method']])[pmatch(unique(methods), unique(skill.long[[grid]][['method']]))])
   } # end of loop on grids
 
   ## output single data frame if only one grid is read

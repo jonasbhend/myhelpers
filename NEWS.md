@@ -1,3 +1,15 @@
+## myhelpers 0.0.0.9017
+
+* Added support for operational forecasts to `read_forecast`
+
+## myhelpers 0.0.0.9016
+
+* Added flexibility to supply method string (partial or full) to `read_scores`
+
+## myhelpers 0.0.0.9015
+
+* added function to read forecasts
+
 ## myhelpers 0.0.0.9014
 
 * restructure `read_scores` to minimize file open and close operations
