@@ -1,3 +1,8 @@
+## myhelpers 0.0.0.9018
+
+* Added functionality to read in subsets of the forecast array
+* Added functions to expand and shrink arrays based on `abind`
+
 ## myhelpers 0.0.0.9017
 
 * Added support for operational forecasts to `read_forecast`
