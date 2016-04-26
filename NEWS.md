@@ -1,4 +1,12 @@
-## myhelpers 0.0.0.9021
+## myhelpers 0.0.0.9023
+
+* added support for new version of maps (>= 3.0)
+
+## myhelpers 0.0.0.9022
+
+* depends on `colorspace` rather than importing it
+
+# myhelpers 0.0.0.9021
 
 * fixed bug in `read_single` when reading with constraints on
 only latitudes or longitudes
