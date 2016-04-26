@@ -59,6 +59,12 @@ filled_contour <- function(x=seq(0,1,length.out=nrow(z)),
     y <- x$y
     x <- x$x
   }
+
+  ## reorder x, y and z
+  z <- z[order(x), order(y)]
+  x <- x[order(x)]
+  y <- y[order(y)]
+
   if (any(diff(x) <= 0) || any(diff(y) <= 0))
     stop("increasing 'x' and 'y' values expected")
   if (!is.matrix(z) || nrow(z) <= 1L || ncol(z) <= 1L)
