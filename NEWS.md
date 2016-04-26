@@ -1,3 +1,14 @@
+## myhelpers 0.0.0.9020
+
+* Chanegd layout of main functions. `read_ncdf` is now used to
+read either a collection or single file, `read_singl` is the 
+underlying workhorse operating on netcdf
+
+## myhelpers 0.0.0.9019
+
+* Added function to read subsets of NetCDF files `read_ncdf`
+* rewrote `read_forecasts` to harness the functionality of `read_ncdf`
+
 ## myhelpers 0.0.0.9018
 
 * Added functionality to read in subsets of the forecast array
