@@ -1,3 +1,8 @@
+## myhelpers 0.0.0.9021
+
+* fixed bug in `read_single` when reading with constraints on
+only latitudes or longitudes
+
 ## myhelpers 0.0.0.9020
 
 * Chanegd layout of main functions. `read_ncdf` is now used to

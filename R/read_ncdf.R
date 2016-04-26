@@ -1,5 +1,7 @@
 #' @name read_ncdf
 #'
+#' @aliases read_single get_fcfiles
+#'
 #' @title Read Data from a NetCDF
 #'
 #' @description \code{read_ncdf} reads and collates (a slice of) data from a
@@ -134,6 +136,9 @@ read_single <- function(x, index=NA,
   if (!is.null(mask)){
     stopifnot(length(mask) == prod(dims[1:2]) | length(mask) == dims[1])
   } else if (!is.null(lon) | !is.null(lat) | !is.null(loi) | !is.null(lai)) {
+
+    loi <- seq(along=lons)
+    lai <- seq(along=lats)
     ## get subset
     if (!is.null(lon)){
       if (length(lon) == 1){
