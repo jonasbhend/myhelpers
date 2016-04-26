@@ -1,3 +1,7 @@
+## myhelpers 0.0.0.9025
+
+* bug fix and change of NEWS
+
 ## myhelpers 0.0.0.9023
 
 * added support for new version of maps (>= 3.0)
@@ -14,7 +18,7 @@ only latitudes or longitudes
 ## myhelpers 0.0.0.9020
 
 * Chanegd layout of main functions. `read_ncdf` is now used to
-read either a collection or single file, `read_singl` is the 
+read either a collection or single file, `read_singl` is the
 underlying workhorse operating on netcdf
 
 ## myhelpers 0.0.0.9019

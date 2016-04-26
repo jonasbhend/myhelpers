@@ -135,12 +135,11 @@ read_single <- function(x, index=NA,
   ## check whether subset should be read in
   if (!is.null(mask)){
     stopifnot(length(mask) == prod(dims[1:2]) | length(mask) == dims[1])
-  } else if (!is.null(lon) | !is.null(lat) | !is.null(loi) | !is.null(lai)) {
+  } else if (!is.null(lon)| !is.null(lat) | !is.null(loi) | !is.null(lai)) {
 
-    loi <- seq(along=lons)
-    lai <- seq(along=lats)
     ## get subset
     if (!is.null(lon)){
+      loi <- seq(along=lons)
       if (length(lon) == 1){
         londiff <- (lons - lon + 180) %% 360 - 180
         loi <- which.min(abs(londiff))
@@ -149,6 +148,7 @@ read_single <- function(x, index=NA,
       }
     }
     if (!is.null(lat)){
+      lai <- seq(along=lats)
       if (length(lat) == 1){
         lai <- which.min(abs(lats - lat))
       } else if (length(lat) == 2){
