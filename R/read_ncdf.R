@@ -35,8 +35,10 @@ read_ncdf <- function(x, expand=FALSE, ...){
     ftmp <- lapply(x, read_single, ...)
     ## get rid of NULLs
     ftmp <- ftmp[sapply(ftmp, length) > 0]
+    if (length(ftmp) == 0) return(NULL)
 
     fdims <- sapply(ftmp, dim)
+    if (all(sapply(fdims, is.null))) fdims <- sapply(ftmp, length)
     if (is.vector(fdims)) fdims <- t(fdims)
     if (expand == TRUE){
       fdims <- apply(fdims, 1, max)
@@ -46,7 +48,7 @@ read_ncdf <- function(x, expand=FALSE, ...){
       dfun <- shrink
     }
     fcst <- abind(lapply(ftmp, dfun, fdims),
-                  along=length(dim(ftmp[[1]])) + 1)
+                  along=max(length(dim(ftmp[[1]])), 1) + 1)
 
     ## reconcile attributes
     attns <- setdiff(names(attributes(ftmp[[1]])), c('dim', 'time'))
@@ -138,22 +140,33 @@ read_single <- function(x, index=NA,
   } else if (!is.null(lon)| !is.null(lat) | !is.null(loi) | !is.null(lai)) {
 
     ## get subset
-    if (!is.null(lon)){
+    if (is.null(loi)) {
       loi <- seq(along=lons)
+    } else if (min(loi) < 1 | max(loi) > length(lons)) {
+      return(NULL)
+    }
+    if (is.null(lai)) {
+      lai <- seq(along=lats)
+    } else if (min(lai) < 1 | max(lai) > length(lats)){
+      return(NULL)
+    }
+
+    if (!is.null(lon)){
       if (length(lon) == 1){
         londiff <- (lons - lon + 180) %% 360 - 180
         loi <- which.min(abs(londiff))
       } else if (length(lon) == 2){
         loi <- which(lons >= lon[1] & lons <= lon[2])
       }
+      if (length(loi) == 0) return(NULL)
     }
     if (!is.null(lat)){
-      lai <- seq(along=lats)
       if (length(lat) == 1){
         lai <- which.min(abs(lats - lat))
       } else if (length(lat) == 2){
         lai <- which(lats >= min(lat) & lats <= max(lat))
       }
+      if (length(lai) == 0) return(NULL)
     }
 
 
@@ -204,8 +217,8 @@ read_single <- function(x, index=NA,
                   c(sum(mask), dim(ntmp)[-spacedimi]))
   }
   if (!all(ti)){
-    ntmp <- array(ntmp[rep(c(ti), each=length(ntmp)/length(ti))],
-                  c(dim(ntmp)[-length(dim(ntmp))], sum(ti)))
+    ntmp <- drop(array(ntmp[rep(c(ti), each=length(ntmp)/length(ti))],
+                  c(dim(ntmp)[-length(dim(ntmp))], sum(ti))))
   }
 
 
@@ -249,18 +262,20 @@ get_fcfiles <- function(model='ecmwf-system4',
                         method='none',
                         init='05',
                         granularity='monthly',
-                        source = c("euporias", "operational")){
+                        source = c("euporias", "operational", "demo")){
 
   source <- match.arg(source)
   if (source == 'euporias'){
     fcfiles <- list.files(paste("/store/msclim/bhendj/EUPORIAS", model, grid,
                                 granularity, index, method, sep='/'),
                           pattern=paste0('....', init, '01_', index, '_'), full.names=TRUE)
-  } else {
+  } else if (source == "operational") {
     stopifnot(index %in% c("tas", "pr"))
     oind <- ifelse(index == 'tas', "167", "228")
     fcfiles <- list.files("/store/msclim/sysclim/ecmwf/system4/monthly/sa/netcdf",
                           pattern=paste0('^....', init, '01_', oind, '.nc'), full.names=TRUE)
+  } else {
+    fcfiles <- system.file("extdata", c("tas_2000.nc", "tas_2001.nc", "tas_2002.nc"), package='myhelpers')
   }
   if (length(fcfiles) == 0) stop("No files found")
   attr(fcfiles, 'index') <- index
