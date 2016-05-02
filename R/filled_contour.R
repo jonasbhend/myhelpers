@@ -79,7 +79,8 @@ filled_contour <- function(x=seq(0,1,length.out=nrow(z)),
     localTitle(...)
   }
 
-  if (is.null(col)) col <- diverge_hcl(length(levels) - 1, h=c(240, 10))
+  if (is.null(col)) col <- mchcol(n=length(levels) - 1)
+
   .filled.contour(x,y,z,levels=levels, col=col)
   if (add.boundary){
     contour(x, y, z, levels=levels, add=T, drawlabels=drawlabels,

@@ -1,3 +1,7 @@
+## myhelpers 0.0.0.9027
+
+* Link to MeteoSwiss colour tables and replace `diverge_hcl` based colour tables throughout
+
 ## myhelpers 0.0.0.9026
 
 * Fix representation of longitude/latitude selection

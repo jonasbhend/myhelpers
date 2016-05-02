@@ -1,7 +1,7 @@
 Package: myhelpers
 Title: Set of Tools for Often Performed Tasks
 Date: "`r Sys.Date()`"
-Version: 0.0.0.9026
+Version: 0.0.0.9027
 Authors@R: person("Jonas", "Bhend", email="jonas.bhend@gmx.ch", role = c("aut", "cre"))
 Description: A lose collection of functions to simplify data analyses and
     plotting. Most of the functions will be fairly specific to the currently
@@ -13,10 +13,10 @@ Depends:
     reshape2,
     maps (>= 3.0),
     lubridate,
-    colorspace,
     abind
 Imports:
-    geocors
+    geocors,
+    colkd
 License: GPL-3
 LazyData: true
 Suggests:

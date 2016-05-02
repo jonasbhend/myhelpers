@@ -71,8 +71,7 @@ plot_scores <- function(df, value.var='value',
   }
   if (is.null(colours)){
     ncols <- length(levels) - 1
-    colours <- diverge_hcl(ncols, c(240, 10), c=c(80,20), l=c(20,95))
-    if (ncols %% 2 == 1) colours[ceiling(ncols / 2)] <- '#FFFFFF'
+    colours <- mchcol(n=ncols)
   }
 
   if (type == 'image'){

@@ -14,7 +14,7 @@
 #'   latitude, by grid index, by time, or as a compact representation of a
 #'   selection of grid points (e.g. land only).
 #'
-#' @param fcfiles a vector of file paths to the forecast file collection
+#' @param x a vector of file paths to the forecast file collection
 #' @param expand logical, should forecast arrays be expanded if differing
 #'   numbers of ensemble members are available in hindcast set?
 #' @param ... parameters passed on to \code{\link{read_single}}
@@ -65,7 +65,6 @@ read_ncdf <- function(x, expand=FALSE, ...){
 
 #' @rdname read_ncdf
 #'
-#' @param x NetCDF file path
 #' @param index Variable name to be read
 #' @param lon,lat the longitude and latitude to be read for point forecasts,
 #' or the longitude and latitude limits for a subset of the forecast domain
@@ -249,7 +248,6 @@ read_single <- function(x, index=NA,
 #'
 #' @param model Name of forecasting system
 #' @param grid Name of grid to be read
-#' @param index Name of variable (index) to be read
 #' @param method Name of method for debiasing of forecast
 #' @param init Month of initialization (e.g. '05')
 #' @param granularity granularity of forecast data to be read
