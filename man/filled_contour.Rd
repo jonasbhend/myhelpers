@@ -7,9 +7,9 @@
 filled_contour(x = seq(0, 1, length.out = nrow(z)), y = seq(0, 1, length.out
   = ncol(z)), z, levels = pretty(zlim, 12), col = NULL, xlim = range(x),
   ylim = range(y), zlim = range(z[is.finite(z)]), add = FALSE,
-  axes = TRUE, col.axis = 1, col.box = 1, add.boundary = TRUE,
-  col.contour = "grey", lty.contour = 1, lwd.contour = 1,
-  drawlabels = FALSE, ...)
+  axes = TRUE, type = c("contour", "image"), col.axis = 1, col.box = 1,
+  add.boundary = TRUE, col.contour = "grey", lty.contour = 1,
+  lwd.contour = 1, drawlabels = FALSE, ...)
 }
 \arguments{
 \item{x,y}{Locations of grid cells for values of \code{z}.}
@@ -25,6 +25,8 @@ filled_contour(x = seq(0, 1, length.out = nrow(z)), y = seq(0, 1, length.out
 \item{add}{Logical, hsould plot be added to existing plot?}
 
 \item{axes}{Logical, should axes and bounding box be drawn?}
+
+\item{type}{One of 'contour' or 'image' for contour and image plots respectively.}
 
 \item{col.axis,col.box}{Colour for axes and bounding box.}
 
@@ -43,6 +45,14 @@ for boundary contours.}
 Contrary to \code{\link[graphics]{filled.contour}}, this function provides
 the atmoic function for contour shading in analogy with
 \code{\link[graphics]{image}} and \code{\link[graphics]{contour}}.
+}
+\examples{
+x <- seq(1,100)
+y <- seq(1,80)
+z <- outer(x,y, function(x,y) sin(x/10) + cos(y / 50))
+
+# contour plot
+filled_contour(x,y,z)
 }
 \keyword{plot}
 

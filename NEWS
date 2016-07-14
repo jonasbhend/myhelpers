@@ -1,3 +1,11 @@
+## myhelpers 0.0.0.9029
+
+* Added swith for image plots to `filled_contour`
+
+## myhelpers 0.0.0.9028
+
+* Added default behaviour if variable name is not specified in `nc_write`
+
 ## myhelpers 0.0.0.9027
 
 * Link to MeteoSwiss colour tables and replace `diverge_hcl` based colour tables throughout

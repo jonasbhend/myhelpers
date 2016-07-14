@@ -1,8 +1,10 @@
 Package: myhelpers
 Title: Set of Tools for Often Performed Tasks
-Date: "`r Sys.Date()`"
-Version: 0.0.0.9027
-Authors@R: person("Jonas", "Bhend", email="jonas.bhend@gmx.ch", role = c("aut", "cre"))
+Date: 2016-07-14
+Version: 0.0.0.9029
+Authors@R: c(person("Jonas", "Bhend", email="jonas.bhend@meteoswiss.ch",
+    role = "cre"),
+    person("MeteoSwiss", role=c("aut", "cph")))
 Description: A lose collection of functions to simplify data analyses and
     plotting. Most of the functions will be fairly specific to the currently
     used compute environment and thus probably not of greater use to the
@@ -13,8 +15,7 @@ Depends:
     reshape2,
     maps (>= 3.0),
     lubridate,
-    abind
-Imports:
+    abind,
     geocors,
     colkd
 License: GPL-3

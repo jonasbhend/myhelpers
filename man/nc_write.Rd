@@ -11,7 +11,8 @@ nc_write(nctempfile, file, varname, data, append = FALSE, ...)
 
 \item{file}{path to output netcdf file}
 
-\item{varname}{variable name to write output to}
+\item{varname}{variable name to write output to (if set to \code{NULL},
+the first variable in the template file will be used)}
 
 \item{data}{array (or vector) containing the data to be written to the output
 file}

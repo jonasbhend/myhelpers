@@ -11,6 +11,7 @@
 #' @param xlim,ylim,zlim x- y- and z-limits for the plot.
 #' @param add Logical, hsould plot be added to existing plot?
 #' @param axes Logical, should axes and bounding box be drawn?
+#' @param type One of 'contour' or 'image' for contour and image plots respectively.
 #' @param col.axis,col.box Colour for axes and bounding box.
 #' @param add.boundary Logical, should filled contours be separated with a
 #'   boundary line (drawn by \code{\link[graphics]{contour}})?
@@ -21,6 +22,15 @@
 #'   \code{\link{title}}, \code{\link{Axis}} and \code{\link{box}}.
 #'
 #' @keywords plot
+#'
+#' @examples
+#' x <- seq(1,100)
+#' y <- seq(1,80)
+#' z <- outer(x,y, function(x,y) sin(x/10) + cos(y / 50))
+#'
+#' # contour plot
+#' filled_contour(x,y,z)
+#'
 #' @export
 filled_contour <- function(x=seq(0,1,length.out=nrow(z)),
                            y=seq(0,1,length.out=ncol(z)),
@@ -32,6 +42,7 @@ filled_contour <- function(x=seq(0,1,length.out=nrow(z)),
                            zlim = range(z[is.finite(z)]),
                            add = FALSE,
                            axes = TRUE,
+                           type=c("contour", "image"),
                            col.axis = 1,
                            col.box = 1,
                            add.boundary = TRUE,
@@ -41,6 +52,8 @@ filled_contour <- function(x=seq(0,1,length.out=nrow(z)),
                            drawlabels=FALSE,
                            ...
                            ) {
+
+  type <- match.arg(type)
   if (missing(z)) {
     if (!missing(x)) {
       if (is.list(x)) {
@@ -81,10 +94,14 @@ filled_contour <- function(x=seq(0,1,length.out=nrow(z)),
 
   if (is.null(col)) col <- mchcol(n=length(levels) - 1)
 
-  .filled.contour(x,y,z,levels=levels, col=col)
-  if (add.boundary){
-    contour(x, y, z, levels=levels, add=T, drawlabels=drawlabels,
-            col=col.contour, lty=lty.contour, lwd=lwd.contour)
+  if (type == 'contour'){
+    .filled.contour(x,y,z,levels=levels, col=col)
+    if (add.boundary){
+      contour(x, y, z, levels=levels, add=T, drawlabels=drawlabels,
+              col=col.contour, lty=lty.contour, lwd=lwd.contour)
+    }
+  } else {
+    image(x,y, z, breaks=levels, col=col, add=T)
   }
 
   if (!add) {

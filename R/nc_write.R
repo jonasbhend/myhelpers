@@ -4,7 +4,8 @@
 #'
 #' @param nctempfile path to netcdf template (see details)
 #' @param file path to output netcdf file
-#' @param varname variable name to write output to
+#' @param varname variable name to write output to (if set to \code{NULL},
+#'   the first variable in the template file will be used)
 #' @param data array (or vector) containing the data to be written to the output
 #'   file
 #' @param append logical, should data be appended to existing netcdf file?
@@ -24,6 +25,8 @@ nc_write <- function(nctempfile, file, varname, data, append=FALSE, ...){
   nctemplate <- nc_open(nctempfile, readunlim=FALSE, suppress_dimvals=TRUE)
   on.exit(nc_close(nctemplate))
 
+  ## set variable name if not specified
+  if (is.null(varname)) varname <- names(nctemplate$var)[1]
   ## check if an accordingly named variable exists
   if (!any(names(nctemplate$var) == varname)) stop('Variable to write does not exist')
 

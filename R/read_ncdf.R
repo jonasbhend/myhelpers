@@ -266,7 +266,7 @@ get_fcfiles <- function(model='ecmwf-system4',
   if (source == 'euporias'){
     fcfiles <- list.files(paste("/store/msclim/bhendj/EUPORIAS", model, grid,
                                 granularity, index, method, sep='/'),
-                          pattern=paste0('....', init, '01_', index, '_'), full.names=TRUE)
+                          pattern=paste0(if (granularity == 'monthly') paste0(index, '_'), '....', init, '01_', if (granularity != 'monthly') paste0(index, '_')), full.names=TRUE)
   } else if (source == "operational") {
     stopifnot(index %in% c("tas", "pr"))
     oind <- ifelse(index == 'tas', "167", "228")
