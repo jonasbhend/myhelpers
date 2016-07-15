@@ -27,6 +27,8 @@
 #' @export
 nc_time <- function(nc){
   t.i <- grep('tim', names(nc$dim))
+  if (length(t.i) == 0) t.i <- grep('init', names(nc$dim))
+  if (length(t.i) == 0) return(NULL)
   t.units <- nc$dim[[t.i]]$units
   t.mul <- c(second=1,
              minute=60,
