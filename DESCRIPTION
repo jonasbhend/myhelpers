@@ -1,7 +1,7 @@
 Package: myhelpers
 Title: Set of Tools for Often Performed Tasks
-Date: 2016-07-15
-Version: 0.0.0.9030
+Date: 2016-07-29
+Version: 0.0.0.9031
 Authors@R: c(person("Jonas", "Bhend", email="jonas.bhend@meteoswiss.ch",
     role = "cre"),
     person("MeteoSwiss", role=c("aut", "cph")))

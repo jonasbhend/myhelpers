@@ -9,6 +9,8 @@
 #' @param initmonths character vector of initialization months
 #' @param grids character vector of grids
 #' @param granularities character vector of temporal resolutions
+#' @param obs character vector of verifying observations (e.g. ERA-INT)
+#' @param periods character of periods over which the verification has been carried out (e.g. 1981-2014)
 #' @param ccrs logical should recalibrated indices be used?
 #' @param detrends logical should detrended series be used?
 #' @param leads index of lead times, or a character string specifying
@@ -24,7 +26,9 @@
 read_scores <- function(models='ecmwf-system4',
                         scores=c('EnsCorr', 'FairRpss'), indexes='tas',
                         methods='none', initmonths="05", grids="global2",
-                        granularities="seasonal", ccrs=c(FALSE, TRUE),
+                        granularities="seasonal", obs=NULL,
+                        periods=NULL,
+                        ccrs=c(FALSE, TRUE),
                         detrends=FALSE, leads=2,
                         reference=NULL,
                         dpath="/store/msclim/bhendj/EUPORIAS", cleanup=FALSE){
@@ -45,7 +49,8 @@ read_scores <- function(models='ecmwf-system4',
     skill <- expand.grid(model=models, index=indexes, method=methods,
                          initmon=initmonths,
                          score=scores, granularity=granularities, ccr=ccrs,
-                         detrend=detrends, lead=leads)
+                         detrend=detrends, lead=leads, obs=obs,
+                         period=periods, stringsAsFactors=FALSE)
     skill$method <- as.character(skill$method)
     skill$grid <- grid
     skillnames <- names(skill)
@@ -64,12 +69,18 @@ read_scores <- function(models='ecmwf-system4',
       filepaths <- paste(dpath, 'skill_scores', grid, skill$granularity, skill$index, sep='/')
       filenames <- paste0('^', skill$index, c('', '_detrend')[skill$detrend*1 + 1],
                           c('', '_CCR')[skill$ccr*1 + 1], '_',
-                          mstring, '_', skill$model, '_vs_.*initmon', skill$initmon, '.nc$')
+                          mstring, '_', skill$model, '_vs_',
+                          ifelse(is.null(skill$obs), '.*', skill$obs),
+                          '_', ifelse(is.null(skill$period), '.*-.*', skill$period),
+                          '_initmon', skill$initmon, '.nc$')
     } else {
       filepaths <- paste(dpath, 'skill_against_reference', grid, skill$granularity, skill$index, sep='/')
       filenames <- paste0('^', skill$index, c('', '_detrend')[skill$detrend*1 + 1],
                           c('', '_CCR')[skill$ccr*1 + 1], '_',
-                          mstring, '_', skill$model, '-ref-', reference, '_vs_.*_.*initmon', skill$initmon, '.nc$')
+                          mstring, '_', skill$model, '-ref-', reference, '_vs_',
+                          ifelse(is.null(skill$obs), '.*', skill$obs),
+                          '_', ifelse(is.null(skill$period), '.*-.*', skill$period),
+                          '_initmon', skill$initmon, '.nc$')
     }
 
     ## read in scores
@@ -119,6 +130,10 @@ read_scores <- function(models='ecmwf-system4',
       allmissing <- apply(skill[,ncol(skill) - rev(seq(lsm) - 1)], 1, function(x) all(is.na(x)))
       skill <- skill[-which(allmissing), ]
     }
+
+    ## fix method strings
+    methods <- gsub("_....-...._.*", "", methods)
+    skill$method <- gsub("_....-...._.*", "", skill$method)
 
     skill.long[[grid]] <- melt(skill, id.vars=skillnames, variable.name='gridID')
     skill.long[[grid]][['gridID']] <- as.numeric(as.character(skill.long[[grid]][['gridID']]))
