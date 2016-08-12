@@ -3,5 +3,7 @@ warnings_are_errors: true
 sudo: required
 cache: packages
 
-install:
-- ./travis-tool.sh aptget_install r-cran-ncdf4
+addons:
+  apt:
+    packages:
+    - r-cran-ncdf4
