@@ -1,6 +1,7 @@
 before_install:
 - ./travis_tool.sh apt_install r-cran-ncdf4
 
-language: r
+language: R
 warnings_are_errors: true
 sudo: required
+cache: packages
