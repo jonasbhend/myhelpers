@@ -4,7 +4,8 @@
 \alias{colourbar}
 \title{plot a colour bar}
 \usage{
-colourbar(levels, colours = NULL, side = 1, units = "", ...)
+colourbar(levels, colours = NULL, side = 1, units = "",
+  hadj.units = 0.5, ...)
 }
 \arguments{
 \item{levels}{a vector with the levels to be used for the distinct colours or a list with components \code{levels} and \code{colours}}
@@ -13,7 +14,9 @@ colourbar(levels, colours = NULL, side = 1, units = "", ...)
 
 \item{side}{side at which axis labels are to be shown}
 
-\item{units}{text for units of colourbar (at right, top end of colour bar)}
+\item{units}{text for units of colourbar (at right, top end of colour bar}
+
+\item{hadj.units}{horizontal adjustment of units string}
 
 \item{...}{additional arguments passed to \code{\link{axis}}}
 }

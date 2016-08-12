@@ -2,5 +2,5 @@
 #'
 #' @name myhelpers
 #' @docType package
-#' @import maps ncdf4 reshape2 geocors lubridate abind colkd
+#' @import maps ncdf4 reshape2 lubridate abind
 NULL

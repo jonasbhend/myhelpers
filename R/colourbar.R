@@ -5,12 +5,14 @@
 #' @param levels a vector with the levels to be used for the distinct colours or a list with components \code{levels} and \code{colours}
 #' @param colours a vector of the colours to be used with the respective levels
 #' @param side side at which axis labels are to be shown
-#' @param units text for units of colourbar (at right, top end of colour bar)
+#' @param units text for units of colourbar (at right, top end of colour bar
+#' @param hadj.units horizontal adjustment of units string
 #' @param ... additional arguments passed to \code{\link{axis}}
 #'
 #' @keywords utilities
 #' @export
-colourbar <- function(levels, colours=NULL, side=1, units='', ...){
+colourbar <- function(levels, colours=NULL, side=1,
+                      units='', hadj.units=0.5, ...){
   if (is.list(levels)){
     colours <- levels$col
     levels <- levels$lev
@@ -31,5 +33,5 @@ colourbar <- function(levels, colours=NULL, side=1, units='', ...){
   }
   box()
   axis(side, at=seq(1.5, ncols), labels=levels[-c(1, nlevs)], ...)
-  axis(side, at=ncols+0.5, labels=units, tick=FALSE, ...)
+  axis(side, at=ncols+0.5, labels=units, tick=FALSE, hadj=hadj.units, ...)
 }

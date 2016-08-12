@@ -94,7 +94,11 @@ plot_scores <- function(df, value.var='value',
               ylim=if (length(grep("eobs", grid)) == 1) c(10,85) else NULL)
     # transform the map coordinates to rotated coords
     if (length(grep('eobs', grid)) == 1){
-      mmrot <- geocors.trafo(na.omit(mm$x), na.omit(mm$y), from.type='lonlat',
+      if (!requireNamespace("geocors", quietly = TRUE)){
+        stop("MeteoSwiss package geocors required for rotated coordinates",
+             call.=FALSE)
+      }
+      mmrot <- geocors::geocors.trafo(na.omit(mm$x), na.omit(mm$y), from.type='lonlat',
                              to.type='rotpol', to.pars=list(plon=-162, plat=39.25))
       expand <- lapply(mm[c('x', 'y')], function(x){
         xout <- rep(NA, length(x))

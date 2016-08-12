@@ -6,9 +6,10 @@
 \usage{
 read_scores(models = "ecmwf-system4", scores = c("EnsCorr", "FairRpss"),
   indexes = "tas", methods = "none", initmonths = "05",
-  grids = "global2", granularities = "seasonal", ccrs = c(FALSE, TRUE),
-  detrends = FALSE, leads = 2, reference = NULL,
-  dpath = "/store/msclim/bhendj/EUPORIAS", cleanup = FALSE)
+  grids = "global2", granularities = "seasonal", obs = NULL,
+  periods = NULL, ccrs = c(FALSE, TRUE), detrends = FALSE, leads = 2,
+  reference = NULL, dpath = "/store/msclim/bhendj/EUPORIAS",
+  cleanup = FALSE)
 }
 \arguments{
 \item{models}{character vector of the names of forecasting systems}
@@ -24,6 +25,10 @@ read_scores(models = "ecmwf-system4", scores = c("EnsCorr", "FairRpss"),
 \item{grids}{character vector of grids}
 
 \item{granularities}{character vector of temporal resolutions}
+
+\item{obs}{character vector of verifying observations (e.g. ERA-INT)}
+
+\item{periods}{character of periods over which the verification has been carried out (e.g. 1981-2014)}
 
 \item{ccrs}{logical should recalibrated indices be used?}
 

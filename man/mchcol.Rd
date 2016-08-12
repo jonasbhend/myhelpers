@@ -2,22 +2,27 @@
 % Please edit documentation in R/mchcol.R
 \name{mchcol}
 \alias{mchcol}
-\title{Make MeteoSwiss colourtables accessible}
+\title{Make MeteoSwiss Colour Tables Accessible}
 \usage{
 mchcol(colfun = "colkd.temp.anom", n = 11, midcol = "#FFFFFF")
 }
 \arguments{
-\item{colfun}{name of function from package \pkg{colkd}
-providing colour tables}
+\item{colfun}{name of function from package \pkg{colkd} providing colour
+tables}
 
 \item{n}{length of colours to output}
 
-\item{midcol}{colour to be used for central element in diverging
-  colour scales with uneven number of colours (defaults to white).}
+\item{midcol}{colour to be used for central element in diverging colour
+  scales with uneven number of colours (defaults to white).}
 }
 \description{
-Interpolate standard, fixed-length MeteoSwiss colour tables to
-varying number of colours (end points are fixed).
+Interpolate standard, fixed-length MeteoSwiss colour tables to varying number
+of colours (end points are fixed).
+}
+\note{
+In case the package \code{colkd} is not available,
+  \code{\link[colorspace]{diverge_hcl}} from package \code{colorspace} is
+  used to generate colour tables instead.
 }
 \keyword{util}
 
