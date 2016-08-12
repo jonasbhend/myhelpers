@@ -9,4 +9,4 @@ addons:
     - r-cran-ncdf4
 
 env:
-- _R_CHECK_FORCE_SUGGESTS_ = FALSE
+- _R_CHECK_FORCE_SUGGESTS_=0
