@@ -10,3 +10,9 @@ addons:
 
 env:
 - _R_CHECK_FORCE_SUGGESTS_=0
+
+r_github_packages:
+  - jimhester/covr
+
+after_success:
+  - Rscript -e 'covr::codecov()'
