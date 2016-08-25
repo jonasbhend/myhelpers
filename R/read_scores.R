@@ -11,7 +11,7 @@
 #' @param granularities character vector of temporal resolutions
 #' @param obs character vector of verifying observations (e.g. ERA-INT)
 #' @param periods character of periods over which the verification has been carried out (e.g. 1981-2014)
-#' @param ccrs logical should recalibrated indices be used?
+#' @param seasmethods logical should recalibrated indices be used?
 #' @param detrends logical should detrended series be used?
 #' @param leads index of lead times, or a character string specifying
 #' what lead times to use (currently only \code{"last"} is supported)
@@ -26,9 +26,9 @@
 read_scores <- function(models='ecmwf-system4',
                         scores=c('EnsCorr', 'FairRpss'), indexes='tas',
                         methods='none', initmonths="05", grids="global2",
-                        granularities="seasonal", obs=NULL,
-                        periods=NULL,
-                        ccrs=c(FALSE, TRUE),
+                        granularities="seasonal", obs=NA,
+                        periods=NA,
+                        seasmethods='none',
                         detrends=FALSE, leads=2,
                         reference=NULL,
                         dpath="/store/msclim/bhendj/EUPORIAS", cleanup=FALSE){
@@ -48,10 +48,10 @@ read_scores <- function(models='ecmwf-system4',
 
     skill <- expand.grid(model=models, index=indexes, method=methods,
                          initmon=initmonths,
-                         score=scores, granularity=granularities, ccr=ccrs,
+                         score=scores, granularity=granularities,
+                         seasmethod=seasmethods,
                          detrend=detrends, lead=leads, obs=obs,
                          period=periods, stringsAsFactors=FALSE)
-    skill$method <- as.character(skill$method)
     skill$grid <- grid
     skillnames <- names(skill)
     skill <- cbind(skill, matrix(NA, nrow(skill), length(lsm)))
@@ -62,24 +62,32 @@ read_scores <- function(models='ecmwf-system4',
     mstring <- skill$method
     iind <- setdiff(seq(along=mstring), grep("_[0-9]*-[0-9]*_", mstring))
     if (length(iind) > 0){
-      mstring[iind] <- paste0(skill$method[iind], '_[0-9].*')
-      mstring[grep('none', mstring)] <- skill$method[grep("none", mstring)]
+      mper <- paste0('_', ifelse(is.na(skill$period[iind]), '[0-9].*', skill$period[iind]))
+      mobs <- paste0('_', ifelse(is.na(skill$obs[iind]), '.*', skill$obs[iind]))
+      mstring[iind] <- paste0(skill$method[iind], mper, mobs)
+      mstring[grep('none_', mstring)] <- skill$method[grep("none_", mstring)]
     }
     if (is.null(reference)){
       filepaths <- paste(dpath, 'skill_scores', grid, skill$granularity, skill$index, sep='/')
       filenames <- paste0('^', skill$index, c('', '_detrend')[skill$detrend*1 + 1],
-                          c('', '_CCR')[skill$ccr*1 + 1], '_',
+                          ifelse(skill$seasmethod == 'none',
+                                 '',
+                                 paste0('_', toupper(skill$seasmethod))),
+                          '_',
                           mstring, '_', skill$model, '_vs_',
-                          ifelse(is.null(skill$obs), '.*', skill$obs),
-                          '_', ifelse(is.null(skill$period), '.*-.*', skill$period),
+                          ifelse(is.na(skill$obs), '.*', skill$obs),
+                          '_', ifelse(is.na(skill$period), '.*-.*', skill$period),
                           '_initmon', skill$initmon, '.nc$')
     } else {
       filepaths <- paste(dpath, 'skill_against_reference', grid, skill$granularity, skill$index, sep='/')
       filenames <- paste0('^', skill$index, c('', '_detrend')[skill$detrend*1 + 1],
-                          c('', '_CCR')[skill$ccr*1 + 1], '_',
+                          ifelse(skill$seasmethod == 'none',
+                                 '',
+                                 paste0('_', toupper(skill$seasmethod))),
+                          '_',
                           mstring, '_', skill$model, '-ref-', reference, '_vs_',
-                          ifelse(is.null(skill$obs), '.*', skill$obs),
-                          '_', ifelse(is.null(skill$period), '.*-.*', skill$period),
+                          ifelse(is.na(skill$obs), '.*', skill$obs),
+                          '_', ifelse(is.na(skill$period), '.*-.*', skill$period),
                           '_initmon', skill$initmon, '.nc$')
     }
 
@@ -89,7 +97,7 @@ read_scores <- function(models='ecmwf-system4',
       infile <- list.files(filepaths[i], filenames[i], full.names=TRUE)
       if (length(infile) == 1){
         ## deparse infile for method string
-        method <- gsub("detrend_", "", gsub("CCR_", "", gsub(paste0(skill$index[i], '_'), '', gsub(paste0('_', skill$model[i], '.*'), '', basename(infile)))))
+        method <- gsub("detrend_", "", gsub(paste0(toupper(skill$seasmethod[i]), "_"), "", gsub(paste0(skill$index[i], '_'), '', gsub(paste0('_', skill$model[i], '.*'), '', basename(infile)))))
         skill$method[i] <- method
 
         ## check whether infile is already openend
@@ -128,7 +136,7 @@ read_scores <- function(models='ecmwf-system4',
     if (cleanup){
       ## remove rows of skill with all values missing
       allmissing <- apply(skill[,ncol(skill) - rev(seq(lsm) - 1)], 1, function(x) all(is.na(x)))
-      skill <- skill[-which(allmissing), ]
+      if (any(allmissing)) skill <- skill[-which(allmissing), ]
     }
 
     ## fix method strings
