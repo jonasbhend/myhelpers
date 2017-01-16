@@ -1,3 +1,8 @@
+## myhelpers 0.1.0.9001
+
+* added parallel support (`mclapply`) for reading of multiple files in `read_ncdf`
+
+
 ## myhelpers 0.1.0.9000
 
 * changed `read_scores` to deal with different seasonal debias methods

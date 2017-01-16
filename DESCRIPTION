@@ -1,7 +1,7 @@
 Package: myhelpers
 Title: Set of Tools for Often Performed Tasks
-Date: 2016-08-23
-Version: 0.1.0.9000
+Date: 2017-01-16
+Version: 0.1.0.9001
 Authors@R: c(person("Jonas", "Bhend", email="jonas.bhend@meteoswiss.ch",
     role = "cre"),
     person("MeteoSwiss", role=c("aut", "cph")))
@@ -17,7 +17,8 @@ Depends:
     reshape2
 Imports:
     abind,
-    colorspace
+    colorspace,
+    parallel
 Suggests:
     testthat,
     geocors,
