@@ -1,87 +1,91 @@
-## myhelpers 0.1.0.9000
+Changes in version 0.1.0.9001
 
-* changed `read_scores` to deal with different seasonal debias methods
+  * added support for forecasts with only one lead time
 
-## myhelpers 0.1.0
+Changes in version 0.1.0.9000
 
-* added code coverage
+  * changed `read_scores` to deal with different seasonal debias methods
 
-## myhelpers 0.0.0.9032
+Changes in version 0.1.0
 
-* added hadj for units to `colourbar`
-* removed dependency from packages `colkd` and `geocors`
+  * added code coverage
 
-## myhelpers 0.0.0.9029
+Changes in version 0.0.0.9032
 
-* Added switch for image plots to `filled_contour`
+  * added hadj for units to `colourbar`
+  * removed dependency from packages `colkd` and `geocors`
 
-## myhelpers 0.0.0.9028
+Changes in version 0.0.0.9029
 
-* Added default behaviour if variable name is not specified in `nc_write`
+  * Added switch for image plots to `filled_contour`
 
-## myhelpers 0.0.0.9027
+Changes in version 0.0.0.9028
 
-* Link to MeteoSwiss colour tables and replace `diverge_hcl` based colour tables throughout
+  * Added default behaviour if variable name is not specified in `nc_write`
 
-## myhelpers 0.0.0.9026
+Changes in version 0.0.0.9027
 
-* Fix representation of longitude/latitude selection
-* Included some unit tests for read_ncdf
-* Added NetCDF test data for use with package
+  * Link to MeteoSwiss colour tables and replace `diverge_hcl` based colour tables throughout
 
-## myhelpers 0.0.0.9025
+Changes in version 0.0.0.9026
 
-* bug fix and change of NEWS
+  * Fix representation of longitude/latitude selection
+  * Included some unit tests for read_ncdf
+  * Added NetCDF test data for use with package
 
-## myhelpers 0.0.0.9023
+Changes in version 0.0.0.9025
 
-* added support for new version of maps (>= 3.0)
+  * bug fix and change of NEWS
 
-## myhelpers 0.0.0.9022
+Changes in version 0.0.0.9023
 
-* depends on `colorspace` rather than importing it
+  * added support for new version of maps (>= 3.0)
+
+Changes in version 0.0.0.9022
+
+  * depends on `colorspace` rather than importing it
 
 # myhelpers 0.0.0.9021
 
-* fixed bug in `read_single` when reading with constraints on
+  * fixed bug in `read_single` when reading with constraints on
 only latitudes or longitudes
 
-## myhelpers 0.0.0.9020
+Changes in version 0.0.0.9020
 
-* Chanegd layout of main functions. `read_ncdf` is now used to
+  * Chanegd layout of main functions. `read_ncdf` is now used to
 read either a collection or single file, `read_single` is the
 underlying workhorse operating on netcdf
 
-## myhelpers 0.0.0.9019
+Changes in version 0.0.0.9019
 
-* Added function to read subsets of NetCDF files `read_ncdf`
-* rewrote `read_forecasts` to harness the functionality of `read_ncdf`
+  * Added function to read subsets of NetCDF files `read_ncdf`
+  * rewrote `read_forecasts` to harness the functionality of `read_ncdf`
 
-## myhelpers 0.0.0.9018
+Changes in version 0.0.0.9018
 
-* Added functionality to read in subsets of the forecast array
-* Added functions to expand and shrink arrays based on `abind`
+  * Added functionality to read in subsets of the forecast array
+  * Added functions to expand and shrink arrays based on `abind`
 
-## myhelpers 0.0.0.9017
+Changes in version 0.0.0.9017
 
-* Added support for operational forecasts to `read_forecast`
+  * Added support for operational forecasts to `read_forecast`
 
-## myhelpers 0.0.0.9016
+Changes in version 0.0.0.9016
 
-* Added flexibility to supply method string (partial or full) to `read_scores`
+  * Added flexibility to supply method string (partial or full) to `read_scores`
 
-## myhelpers 0.0.0.9015
+Changes in version 0.0.0.9015
 
-* added function to read forecasts
+  * added function to read forecasts
 
-## myhelpers 0.0.0.9014
+Changes in version 0.0.0.9014
 
-* restructure `read_scores` to minimize file open and close operations
+  * restructure `read_scores` to minimize file open and close operations
 
-## myhelpers 0.0.0.9012
+Changes in version 0.0.0.9012
 
-* added cleaning up of rows with all values missing `read_scores`
+  * added cleaning up of rows with all values missing `read_scores`
 
-## myhelpers 0.0.0.9001
+Changes in version 0.0.0.9001
 
-* added function to create bubble plot and legends
+  * added function to create bubble plot and legends

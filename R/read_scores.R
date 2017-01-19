@@ -112,12 +112,16 @@ read_scores <- function(models='ecmwf-system4',
         if (skill$score[i] %in% names(nc$var)){
           dtmp <- try(ncvar_get(nc, as.character(skill$score[i])), silent=TRUE)
           if (class(dtmp) != 'try-error'){
-            if (skill$lead[i] == 'last') {
-              lead <- dim(dtmp)[3]
+            if (length(dim(dtmp)) == 2){
+              warning(paste0("No lead times in", infile, "Are you sure you are reading in the right lead times?"))
             } else {
-              lead <- as.numeric(as.character(skill$lead))
+              if (skill$lead[i] == 'last') {
+                lead <- dim(dtmp)[3]
+              } else {
+                lead <- as.numeric(as.character(skill$lead))
+              }
+              dtmp <- dtmp[,,lead]
             }
-            dtmp <- dtmp[,,lead]
             lolaname <- sapply(nc$var[[as.character(skill$score[i])]]$dim, function(x) x$name)[1:2]
             lon2 <- rep(nc$dim[[lolaname[1]]]$vals, nc$dim[[lolaname[2]]]$len)
             lat2 <- rep(nc$dim[[lolaname[2]]]$vals, each=nc$dim[[lolaname[1]]]$len)
