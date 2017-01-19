@@ -17,6 +17,7 @@
 #' @param x a vector of file paths to the forecast file collection
 #' @param expand logical, should forecast arrays be expanded if differing
 #'   numbers of ensemble members are available in hindcast set?
+#' @param n.cores number of cores for parallelization
 #' @param ... parameters passed on to \code{\link{read_single}}
 #'
 #' @keywords util
@@ -24,7 +25,7 @@
 #' @seealso read_single
 #'
 #' @export
-read_ncdf <- function(x, expand=FALSE, ...){
+read_ncdf <- function(x, expand=FALSE, n.cores = 1, ...){
 
   if (length(x) == 1){
 
@@ -32,7 +33,10 @@ read_ncdf <- function(x, expand=FALSE, ...){
 
   } else {
 
-    ftmp <- lapply(x, read_single, ...)
+    cl <- makeForkCluster(n.cores)
+    on.exit(stopCluser(cl))
+
+    ftmp <- clusterApplyLB(cl, x, read_single, ...)
     ## get rid of NULLs
     ftmp <- ftmp[sapply(ftmp, length) > 0]
     if (length(ftmp) == 0) return(NULL)
@@ -47,7 +51,7 @@ read_ncdf <- function(x, expand=FALSE, ...){
       fdims <- apply(fdims, 1, min)
       dfun <- shrink
     }
-    fcst <- abind(lapply(ftmp, dfun, fdims),
+    fcst <- abind(clusterApplyLB(cl, ftmp, dfun, fdims, mc.cores=n.cores),
                   along=max(length(dim(ftmp[[1]])), 1) + 1)
 
     ## reconcile attributes

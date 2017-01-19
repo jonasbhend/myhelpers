@@ -1,10 +1,15 @@
+Changes in version 0.1.0.9002
+
+* changed to 'clusterApplyLB' for parallelization
+
 Changes in version 0.1.0.9001
 
-  * added support for forecasts with only one lead time
+* added parallel support (`mclapply`) for reading of multiple files in `read_ncdf`
 
 Changes in version 0.1.0.9000
 
   * changed `read_scores` to deal with different seasonal debias methods
+  * added support for forecasts with only one lead time
 
 Changes in version 0.1.0
 
