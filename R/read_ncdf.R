@@ -33,7 +33,10 @@ read_ncdf <- function(x, expand=FALSE, n.cores = 1, ...){
 
   } else {
 
-    ftmp <- mclapply(x, read_single, ..., mc.cores=n.cores)
+    cl <- makeForkCluster(n.cores)
+    on.exit(stopCluser(cl))
+
+    ftmp <- clusterApplyLB(cl, x, read_single, ...)
     ## get rid of NULLs
     ftmp <- ftmp[sapply(ftmp, length) > 0]
     if (length(ftmp) == 0) return(NULL)
@@ -48,7 +51,7 @@ read_ncdf <- function(x, expand=FALSE, n.cores = 1, ...){
       fdims <- apply(fdims, 1, min)
       dfun <- shrink
     }
-    fcst <- abind(mclapply(ftmp, dfun, fdims, mc.cores=n.cores),
+    fcst <- abind(clusterApplyLB(cl, ftmp, dfun, fdims, mc.cores=n.cores),
                   along=max(length(dim(ftmp[[1]])), 1) + 1)
 
     ## reconcile attributes
