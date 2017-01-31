@@ -34,7 +34,7 @@ read_ncdf <- function(x, expand=FALSE, n.cores = 1, ...){
   } else {
 
     cl <- makeForkCluster(n.cores)
-    on.exit(stopCluser(cl))
+    on.exit(stopCluster(cl))
 
     ftmp <- clusterApplyLB(cl, x, read_single, ...)
     ## get rid of NULLs
@@ -51,7 +51,7 @@ read_ncdf <- function(x, expand=FALSE, n.cores = 1, ...){
       fdims <- apply(fdims, 1, min)
       dfun <- shrink
     }
-    fcst <- abind(clusterApplyLB(cl, ftmp, dfun, fdims, mc.cores=n.cores),
+    fcst <- abind(clusterApplyLB(cl, ftmp, dfun, fdims),
                   along=max(length(dim(ftmp[[1]])), 1) + 1)
 
     ## reconcile attributes
