@@ -21,17 +21,17 @@ colourbar <- function(levels, colours=NULL, side=1,
   nlevs <- length(levels)
   stopifnot(ncols == nlevs - 1)
   if (side %in% c(1,3)){
-    image(1:ncols, 1, as.matrix(1:ncols),
-          breaks=seq(0.5, ncols+0.5), col=colours,
-          axes=FALSE, xlab='', ylab='')
-    abline(v=seq(1.5, ncols))
+    graphics::image(1:ncols, 1, as.matrix(1:ncols),
+                    breaks=seq(0.5, ncols+0.5), col=colours,
+                    axes=FALSE, xlab='', ylab='')
+    graphics::abline(v=seq(1.5, ncols))
   } else {
-    image(1, 1:ncols, t(1:ncols),
-          breaks=seq(0.5, ncols+0.5), col=colours,
-          axes=FALSE, xlab='', ylab='')
-    abline(h=seq(1.5, ncols))
+    graphics::image(1, 1:ncols, t(1:ncols),
+                    breaks=seq(0.5, ncols+0.5), col=colours,
+                    axes=FALSE, xlab='', ylab='')
+    graphics::abline(h=seq(1.5, ncols))
   }
-  box()
-  axis(side, at=seq(1.5, ncols), labels=levels[-c(1, nlevs)], ...)
-  axis(side, at=ncols+0.5, labels=units, tick=FALSE, hadj=hadj.units, ...)
+  graphics::box()
+  graphics::axis(side, at=seq(1.5, ncols), labels=levels[-c(1, nlevs)], ...)
+  graphics::axis(side, at=ncols+0.5, labels=units, tick=FALSE, hadj=hadj.units, ...)
 }

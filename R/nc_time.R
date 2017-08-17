@@ -9,6 +9,7 @@
 #'   \code{\link{as.Date}} and \code{\link{as.POSIXct}} for information on R
 #'   Date format
 #'
+#' @importFrom lubridate day<- month<- year<- day month year
 #' @examples
 #' nc <- list(dim=list(time=NULL))
 #' nc$dim$time <- list(units='seconds since 1979-01-01 00:00:00',

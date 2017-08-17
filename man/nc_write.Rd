@@ -33,4 +33,3 @@ dimensions and all other attributes are copied from \code{nctempfile}.
 The climate data operators \code{cdo} command line tool is used to
 produce an empty netcdf file
 }
-

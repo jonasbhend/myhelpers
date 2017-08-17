@@ -24,8 +24,9 @@
 #'
 #' @seealso read_single
 #'
+#' @importFrom ncdf4 nc_open nc_close ncvar_get
 #' @export
-read_ncdf <- function(x, expand=FALSE, n.cores = 1, ...){
+read_ncdf <- function(x, ..., expand=FALSE, n.cores = 1){
 
   if (length(x) == 1){
 
@@ -33,10 +34,10 @@ read_ncdf <- function(x, expand=FALSE, n.cores = 1, ...){
 
   } else {
 
-    cl <- makeForkCluster(n.cores)
-    on.exit(stopCluster(cl))
+    cl <- parallel::makeForkCluster(n.cores)
+    on.exit(parallel::stopCluster(cl))
 
-    ftmp <- clusterApplyLB(cl, x, read_single, ...)
+    ftmp <- parallel::clusterApplyLB(cl, x, read_single, ...)
     ## get rid of NULLs
     ftmp <- ftmp[sapply(ftmp, length) > 0]
     if (length(ftmp) == 0) return(NULL)
@@ -51,8 +52,8 @@ read_ncdf <- function(x, expand=FALSE, n.cores = 1, ...){
       fdims <- apply(fdims, 1, min)
       dfun <- shrink
     }
-    fcst <- abind(clusterApplyLB(cl, ftmp, dfun, fdims),
-                  along=max(length(dim(ftmp[[1]])), 1) + 1)
+    fcst <- abind::abind(parallel::clusterApplyLB(cl, ftmp, dfun, fdims),
+                         along=max(length(dim(ftmp[[1]])), 1) + 1)
 
     ## reconcile attributes
     attns <- setdiff(names(attributes(ftmp[[1]])), c('dim', 'time'))
@@ -100,8 +101,8 @@ read_single <- function(x, index=NA,
   stopifnot(sum(sapply(list(time, ti, tlim), is.null)*1) >= 2)
 
   ## open netcdf file
-  nc <- nc_open(x)
-  on.exit(nc_close(nc))
+  nc <- ncdf4::nc_open(x)
+  on.exit(ncdf4::nc_close(nc))
 
   ## build a quick dictionary
   varlist <- list(tasmin=c('MN2T24', 'mn2t24', 'tmin', 'tasmin', 'tn'),
@@ -191,7 +192,7 @@ read_single <- function(x, index=NA,
 
   ## subset in time
   if (!is.null(tlim)){
-    if (is.Date(tlim)){
+    if (lubridate::is.Date(tlim)){
       ti2 <- as.Date(ntime) >= tlim[1] & as.Date(ntime) <= tlim[2]
     } else {
       ti2 <- ntime >= as.POSIXct(tlim[1]) & ntime <= as.POSIXct(tlim[2])
@@ -201,7 +202,7 @@ read_single <- function(x, index=NA,
     count[ndim] <- sum(ti2)
     rm(ti2)
   } else if (!is.null(time)){
-    if (is.Date(time)){
+    if (lubridate::is.Date(time)){
       ti <- as.Date(ntime) %in% time
     } else {
       ti <- ntime %in% as.POSIXct(time)
@@ -213,7 +214,7 @@ read_single <- function(x, index=NA,
     return(NULL)
   }
 
-  ntmp <- ncvar_get(nc, varname, start=start, count=count)
+  ntmp <- ncdf4::ncvar_get(nc, varname, start=start, count=count)
   if (!is.null(mask)){
     spacedimi <- seq(1, ifelse(length(mask) == nrow(ntmp), 1, 2))
     ntmp <- array(ntmp[rep(c(mask), length.out=length(ntmp))],

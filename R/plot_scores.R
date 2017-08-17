@@ -18,6 +18,7 @@
 #' @param ... additional arguments passed to \code{\link[graphics]{image}}
 #'
 #' @keywords util
+#' @importFrom ncdf4 nc_open nc_close ncvar_get
 #' @export
 plot_scores <- function(df, value.var='value',
                         dpath='/store/msclim/bhendj/EUPORIAS',
@@ -43,11 +44,11 @@ plot_scores <- function(df, value.var='value',
   lsmfile <- paste0(dpath, '/grids/', grid, '_lsm.nc')
   ## if (length(lsmfile) != 1) browser()
   stopifnot(file.exists(lsmfile))
-  nc <- nc_open(lsmfile)
+  nc <- ncdf4::nc_open(lsmfile)
   lolaname <- sapply(nc$var[['FR_LAND']]$dim, function(x) x$name)[1:2]
   lon <- nc$dim[[lolaname[1]]]$vals
   lat <- nc$dim[[lolaname[2]]]$vals
-  nc_close(nc)
+  ncdf4::nc_close(nc)
 
   ## for plotting readjust longitudes
   if (any(lon > 180)){
@@ -75,18 +76,18 @@ plot_scores <- function(df, value.var='value',
   }
 
   if (type == 'image'){
-    image(sort(lon), sort(lat), score[order(lon), order(lat)],
-          breaks=levels, col=colours, xlab='', ylab='', axes=FALSE, ...)
+    graphics::image(sort(lon), sort(lat), score[order(lon), order(lat)],
+                    breaks=levels, col=colours, xlab='', ylab='', axes=FALSE, ...)
   } else if (type == 'contour') {
-    image(sort(lon), sort(lat), NA*score[order(lon), order(lat)],
-          breaks=levels, col=colours, xlab='', ylab='', axes=FALSE, ...)
-    .filled.contour(sort(lon), sort(lat), score[order(lon), order(lat)],
-          levels=levels, col=colours)
+    graphics::image(sort(lon), sort(lat), NA*score[order(lon), order(lat)],
+                    breaks=levels, col=colours, xlab='', ylab='', axes=FALSE, ...)
+    graphics::.filled.contour(sort(lon), sort(lat), score[order(lon), order(lat)],
+                              levels=levels, col=colours)
 
   }
-  if (!is.null(na.colour)) image(sort(lon), sort(lat), NAs[order(lon), order(lat)],
-                                 breaks=seq(-0.5, 1.5), col=c(NA, na.colour),
-                                 axes=FALSE, xlab='', ylab='', add=T)
+  if (!is.null(na.colour)) graphics::image(sort(lon), sort(lat), NAs[order(lon), order(lat)],
+                                           breaks=seq(-0.5, 1.5), col=c(NA, na.colour),
+                                           axes=FALSE, xlab='', ylab='', add=T)
 
   if (add.map){
     mm <- map(database=database, interior=map.interior, plot=FALSE,
@@ -98,23 +99,26 @@ plot_scores <- function(df, value.var='value',
         stop("MeteoSwiss package geocors required for rotated coordinates",
              call.=FALSE)
       }
-      mmrot <- geocors::geocors.trafo(na.omit(mm$x), na.omit(mm$y), from.type='lonlat',
-                             to.type='rotpol', to.pars=list(plon=-162, plat=39.25))
+      mmrot <- geocors::geocors.trafo(stats::na.omit(mm$x),
+                                      stats::na.omit(mm$y),
+                                      from.type='lonlat',
+                                      to.type='rotpol',
+                                      to.pars=list(plon=-162, plat=39.25))
       expand <- lapply(mm[c('x', 'y')], function(x){
         xout <- rep(NA, length(x))
         xout[!is.na(x)] <- seq(1,sum(!is.na(x)))
         return(xout)})
       mm <- list(x=mmrot$rlon[expand$y], y=mmrot$rlat[expand$x])
     }
-    lines(mm)
+    graphics::lines(mm)
   }
 
-  box()
+  graphics::box()
 
   ## plot title
-  text(par('usr')[1] + diff(par('usr')[1:2])*0.02,
-       par('usr')[4] - diff(par('usr')[3:4])*0.02,
-       title, adj=c(0,1), cex=par('cex.lab')*1.2, font=2)
+  graphics::text(par('usr')[1] + diff(par('usr')[1:2])*0.02,
+                 par('usr')[4] - diff(par('usr')[3:4])*0.02,
+                 title, adj=c(0,1), cex=par('cex.lab')*1.2, font=2)
 
 
   ## return levels and colours for further use

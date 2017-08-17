@@ -48,12 +48,12 @@ map_forecast <- function(lon, lat, x, color=NULL, breaks=NULL, skill=NULL,
   ## figure out color
   if (is.null(color)){
     color <- outer(seq(1, nbreaks), 1:ncat, function(x,y) {
-      hcl(rev(seq(10,240,length=ncat))[y],
-          l=seq(90,20,length=nbreaks)[x],
-          c=seq(30,90,length=nbreaks)[x])
+      grDevices::hcl(rev(seq(10,240,length=ncat))[y],
+                     l=seq(90,20,length=nbreaks)[x],
+                     c=seq(30,90,length=nbreaks)[x])
     })
-    color[1,] <- grey(0.9)
-    if (ncat %% 2 == 1) color[,ncat %/% 2 + 1] <- grey(seq(0.9, 0.2, length=nbreaks))
+    color[1,] <- grDevices::grey(0.9)
+    if (ncat %% 2 == 1) color[,ncat %/% 2 + 1] <- grDevices::grey(seq(0.9, 0.2, length=nbreaks))
   }
 
   ## adjust for plotting of colour scales
@@ -69,7 +69,7 @@ map_forecast <- function(lon, lat, x, color=NULL, breaks=NULL, skill=NULL,
   xplot <- apply(x, 2:3, function(y) if (all(!is.na(y))) max(y) + which.max(y) * 100 - 100 else NA)
 
   if (is.null(skill)){
-    if (plot) image(lon, lat, xplot, col=xcols, breaks=xbreaks, ...)
+    if (plot) graphics::image(lon, lat, xplot, col=xcols, breaks=xbreaks, ...)
   } else {
 
     ## allow for univariate skill metrices to be used (e.g. RPSS)
@@ -80,7 +80,7 @@ map_forecast <- function(lon, lat, x, color=NULL, breaks=NULL, skill=NULL,
     }
 
     stopifnot(dim(skill) == dim(x))
-    if (plot) image(lon, lat, xplot*NA, col=xcols, breaks=xbreaks, ...)
+    if (plot) graphics::image(lon, lat, xplot*NA, col=xcols, breaks=xbreaks, ...)
 
     ## get the skill scores corresponding to the dominant category
     maxprob <- apply(x, 2:3, function(y) if (all(!is.na(y))) which.max(y) else NA)
@@ -98,8 +98,8 @@ map_forecast <- function(lon, lat, x, color=NULL, breaks=NULL, skill=NULL,
 
     ## only plot points with non-zero skill
     xall <- subset(xall, !is.na(skill) & skill > 0)
-    londiff <- median(diff(sort(unique(lon))))*c(-0.5, -0.5, 0.5, 0.5, -0.5, NA)
-    latdiff <- median(diff(sort(unique(lat))))*c(-0.5, 0.5, 0.5, -0.5, -0.5, NA)
+    londiff <- stats::median(diff(sort(unique(lon))))*c(-0.5, -0.5, 0.5, 0.5, -0.5, NA)
+    latdiff <- stats::median(diff(sort(unique(lat))))*c(-0.5, 0.5, 0.5, -0.5, -0.5, NA)
 
     ## select skill representation type
     if (type == "area"){
@@ -111,7 +111,7 @@ map_forecast <- function(lon, lat, x, color=NULL, breaks=NULL, skill=NULL,
     lon.edges <- outer(rep(0, 6), xall$lon, '+') + outer(londiff, xall$skill**expskill, '*')
     lat.edges <- outer(rep(0, 6), xall$lat, '+') + outer(latdiff, xall$skill**expskill, '*')
     ## plot points
-    if (plot) polygon(c(lon.edges), c(lat.edges), col=xall$colour, border=NA)
+    if (plot) graphics::polygon(c(lon.edges), c(lat.edges), col=xall$colour, border=NA)
   }
 
   outlist <- list(breaks=breaks, color=color, type=type)
@@ -132,8 +132,8 @@ map_forecast <- function(lon, lat, x, color=NULL, breaks=NULL, skill=NULL,
 bubble_plot <- function(lon, lat, x, color=NULL, breaks=NULL,
                         skill=NULL, type='area', labels=NULL, ...){
   ncat <- nrow(x)
-  layout(matrix(c(rep(ncat + 1, ncat), seq(1,ncat)), 2, ncat, byrow=TRUE),
-         heights=c(5, lcm(2.5)))
+  graphics::layout(matrix(c(rep(ncat + 1, ncat), seq(1,ncat)), 2, ncat, byrow=TRUE),
+                   heights=c(5, graphics::lcm(2.5)))
 
   ## plot the main plot
   par(mar=rep(0.2, 4))
@@ -154,7 +154,7 @@ bubble_plot <- function(lon, lat, x, color=NULL, breaks=NULL,
   for (i in 1:ncat){
     colourbar(levels=unique(c(0,tmp$breaks[,i], 100)),
               color=tmp$color[,i], units='%')
-    axis(3, at=0.5, labels[i], hadj=0, font=2, tick=F, line=-0.5)
+    graphics::axis(3, at=0.5, labels[i], hadj=0, font=2, tick=F, line=-0.5)
   }
 
   ## plot the main plot
@@ -163,7 +163,7 @@ bubble_plot <- function(lon, lat, x, color=NULL, breaks=NULL,
                       color=color, breaks=breaks,
                       skill=skill, type=type, axes=F,
                       xlab="", ylab="", ...)
-  box()
+  graphics::box()
   invisible(tmp)
 }
 
@@ -197,7 +197,7 @@ skillLegend <- function(args, legend.pos="bottomleft",
                         byrow=TRUE, bbox=FALSE,
                         font.main=par("font.main"), cex.main=par("cex.main"),
                         cex=par("cex.lab"), font=par("font.lab")){
-  pusr <- par("usr")
+  pusr <- graphics::par("usr")
   bwidth <- diff(pusr[1:2])*width
   bheight <- diff(pusr[3:4])*height
   if (length(grep("bottom", legend.pos)) == 1){
@@ -216,7 +216,7 @@ skillLegend <- function(args, legend.pos="bottomleft",
     xpos <- mean(pusr[1:2]) + c(-0.5,0.5)*bwidth
   }
   xpos <- sort(xpos)
-  if (bbox) rect(xpos[1], ypos[1], xpos[2], ypos[2], col='white', border='black')
+  if (bbox) graphics::rect(xpos[1], ypos[1], xpos[2], ypos[2], col='white', border='black')
 
   ## add in skill bubbles
   nlevs <- length(skill.levs)
@@ -236,7 +236,7 @@ skillLegend <- function(args, legend.pos="bottomleft",
   x.edges <- outer(rep(0, 6), xskill, '+') + outer(args$londiff, skill.levs**expskill, '*')
   y.edges <- outer(rep(0, 6), yskill, '+') + outer(args$latdiff, skill.levs**expskill, '*')
 
-  polygon(x.edges, y.edges, col=skill.col, border=NA)
+  graphics::polygon(x.edges, y.edges, col=skill.col, border=NA)
   if (byrow){
     text(mean(xpos), max(yskill) + diff(ypos)*1.5/3,
          "Skill of forecast", adj=c(0.5, 0.5), cex=cex.main, font=font.main)

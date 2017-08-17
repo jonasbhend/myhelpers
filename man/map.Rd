@@ -22,4 +22,3 @@ By default adds lakes to the standard map
 \code{\link[maps]{map}} from the \code{maps} package
 }
 \keyword{utilities}
-

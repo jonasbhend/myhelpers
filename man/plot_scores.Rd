@@ -40,4 +40,3 @@ Draw map of skill scores stored in a data frame. Incomplete rows and
 columns are expanded (e.g. missing values, land sea mask, etc.)
 }
 \keyword{util}
-

@@ -25,4 +25,3 @@ In case the package \code{colkd} is not available,
   used to generate colour tables instead.
 }
 \keyword{util}
-

@@ -15,4 +15,3 @@ addWatermark(txt = NULL, cex = par("cex.axis") * 0.8)
 Add watermark to plot
 }
 \keyword{utilities}
-

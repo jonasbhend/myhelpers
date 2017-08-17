@@ -10,6 +10,7 @@
 #'
 #' @seealso \code{\link[maps]{map}} from the \code{maps} package
 #' @keywords utilities
+#' @importFrom maps map
 #' @export
 map <- function(database= "world", ..., add=FALSE, add.lakes=TRUE){
   ## plus data for plot=FALSE
