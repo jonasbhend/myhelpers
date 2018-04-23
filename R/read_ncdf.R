@@ -62,7 +62,7 @@ read_ncdf <- function(x, ..., expand=FALSE, n.cores = 1){
       fcst <- abind::abind(parallel::clusterApplyLB(cl, ftmp, dfun, fdims),
                            along=max(length(dim(ftmp[[1]])), 1) + 1)
     } else {
-      fcst <- abind(lapply(ftmp, dfun, fdims),
+      fcst <- abind::abind(lapply(ftmp, dfun, fdims),
                     along=max(length(dim(ftmp[[1]])), 1) + 1)
     }
 
