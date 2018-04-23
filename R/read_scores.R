@@ -22,6 +22,8 @@
 #' @param cleanup logical, should only non-missing combinations be retained?
 #'
 #' @keywords util
+#' @importFrom ncdf4 nc_open nc_close ncvar_get
+#' @importFrom reshape2 melt
 #' @export
 read_scores <- function(models='ecmwf-system4',
                         scores=c('EnsCorr', 'FairRpss'), indexes='tas',
@@ -39,12 +41,12 @@ read_scores <- function(models='ecmwf-system4',
     ## get land sea mask of indices to be read
     lsmfile <- list.files(paste0(dpath, '/grids'), paste0('^', grid, '_lsm.nc'), full.names=TRUE)
     stopifnot(length(lsmfile) == 1)
-    nc <- nc_open(lsmfile)
-    lsm <- ncvar_get(nc, "FR_LAND")
+    nc <- ncdf4::nc_open(lsmfile)
+    lsm <- ncdf4::ncvar_get(nc, "FR_LAND")
     lolaname <- sapply(nc$var[['FR_LAND']]$dim, function(x) x$name)[1:2]
     lon <- rep(nc$dim[[lolaname[1]]]$vals, nc$dim[[lolaname[2]]]$len)
     lat <- rep(nc$dim[[lolaname[2]]]$vals, each=nc$dim[[lolaname[1]]]$len)
-    nc <- nc_close(nc)
+    nc <- ncdf4::nc_close(nc)
 
     skill <- expand.grid(model=models, index=indexes, method=methods,
                          initmon=initmonths,
@@ -104,13 +106,13 @@ read_scores <- function(models='ecmwf-system4',
         if (infile == oldinfile){
           nc <- ncold
         } else {
-          if (!is.null(names(nc))) nc <- nc_close(nc)
-          nc <- nc_open(infile)
+          if (!is.null(names(nc))) nc <- ncdf4::nc_close(nc)
+          nc <- ncdf4::nc_open(infile)
         }
         oldinfile <- infile
         ncold <- nc
         if (skill$score[i] %in% names(nc$var)){
-          dtmp <- try(ncvar_get(nc, as.character(skill$score[i])), silent=TRUE)
+          dtmp <- try(ncdf4::ncvar_get(nc, as.character(skill$score[i])), silent=TRUE)
           if (class(dtmp) != 'try-error'){
             if (length(dim(dtmp)) == 2){
               warning(paste0("No lead times in", infile, "Are you sure you are reading in the right lead times?"))
@@ -135,7 +137,7 @@ read_scores <- function(models='ecmwf-system4',
         }
       }
     } # end of loop on rows of skill
-    if (!is.null(names(nc)))  nc <- nc_close(nc)
+    if (!is.null(names(nc)))  nc <- ncdf4::nc_close(nc)
 
     if (cleanup){
       ## remove rows of skill with all values missing
@@ -147,7 +149,7 @@ read_scores <- function(models='ecmwf-system4',
     methods <- gsub("_....-...._.*", "", methods)
     skill$method <- gsub("_....-...._.*", "", skill$method)
 
-    skill.long[[grid]] <- melt(skill, id.vars=skillnames, variable.name='gridID')
+    skill.long[[grid]] <- reshape2::melt(skill, id.vars=skillnames, variable.name='gridID')
     skill.long[[grid]][['gridID']] <- as.numeric(as.character(skill.long[[grid]][['gridID']]))
     ## add in land sea mask, latitudes and longitudes
     skill.long[[grid]][['lsm']] <- c(lsm)[skill.long[[grid]][['gridID']]]

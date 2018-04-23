@@ -21,6 +21,7 @@
 #' expandNA(tt, c(5,5))
 #' shrink(tt, c(2,2))
 #'
+#' @importFrom abind afill<-
 #' @export
 expandNA <- function(x, dims){
   d <- dim(x)
@@ -68,7 +69,7 @@ shrink <- function(x, dims){
   } else if (length(dims) == 1) {
     return(x[seq(1,dims)])
   } else {
-    return(asub(x, lapply(dims, seq, from=1)))
+    return(abind::asub(x, lapply(dims, seq, from=1)))
   }
 }
 

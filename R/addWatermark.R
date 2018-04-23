@@ -5,6 +5,7 @@
 #' @param txt text string to display, defaults to (c) MeteoSwiss <date>
 #' @param cex character expansion factor
 #'
+#' @importFrom graphics par text
 #' @keywords utilities
 #' @export
 addWatermark <- function(txt=NULL, cex=par('cex.axis')*0.8){

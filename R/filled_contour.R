@@ -84,10 +84,10 @@ filled_contour <- function(x=seq(0,1,length.out=nrow(z)),
     stop("no proper 'z' matrix specified")
   if (!add) {
     localPlotWindow <- function(xlim, ylim, ..., main, sub,
-                                xlab, ylab, outer, line) plot.window(xlim, ylim,
+                                xlab, ylab, outer, line) graphics::plot.window(xlim, ylim,
                                                                      ...)
-    localTitle <- function(..., log) title(...)
-    plot.new()
+    localTitle <- function(..., log) graphics::title(...)
+    graphics::plot.new()
     localPlotWindow(xlim, ylim, xaxs='i', yaxs='i', ...)
     localTitle(...)
   }
@@ -95,18 +95,18 @@ filled_contour <- function(x=seq(0,1,length.out=nrow(z)),
   if (is.null(col)) col <- mchcol(n=length(levels) - 1)
 
   if (type == 'contour'){
-    .filled.contour(x,y,z,levels=levels, col=col)
+    graphics::.filled.contour(x,y,z,levels=levels, col=col)
     if (add.boundary){
-      contour(x, y, z, levels=levels, add=T, drawlabels=drawlabels,
+      graphics::contour(x, y, z, levels=levels, add=T, drawlabels=drawlabels,
               col=col.contour, lty=lty.contour, lwd=lwd.contour)
     }
   } else {
-    image(x,y, z, breaks=levels, col=col, add=T)
+    graphics::image(x,y, z, breaks=levels, col=col, add=T)
   }
 
   if (!add) {
-    localAxis <- function(..., col.axis, bg, pch, cex, lty, lwd) Axis(...)
-    localBox <- function(..., col.box, bg, pch, cex, lty, lwd) box(...)
+    localAxis <- function(..., col.axis, bg, pch, cex, lty, lwd) graphics::Axis(...)
+    localBox <- function(..., col.box, bg, pch, cex, lty, lwd) graphics::box(...)
     if (axes) {
       localAxis(x, side = 1, ...)
       localAxis(y, side = 2, ...)

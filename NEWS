@@ -1,3 +1,7 @@
+Changes in version 0.1.0.9003
+
+* changed order of arguments in `read_ncdf` to reflect expectation (expand and n.cores is last)
+
 Changes in version 0.1.0.9002
 
 * changed to 'clusterApplyLB' for parallelization

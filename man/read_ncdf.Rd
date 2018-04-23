@@ -8,7 +8,7 @@
 \alias{get_fcfiles}
 \title{Read Data from a NetCDF}
 \usage{
-read_ncdf(x, expand = FALSE, n.cores = 1, ...)
+read_ncdf(x, ..., expand = FALSE, n.cores = 1)
 
 read_single(x, index = NA, lon = NULL, lat = NULL, loi = NULL,
   lai = NULL, mask = NULL, tlim = NULL, ti = NULL, time = NULL)
@@ -20,12 +20,12 @@ get_fcfiles(model = "ecmwf-system4", grid = "global2", index = "tas",
 \arguments{
 \item{x}{a vector of file paths to the forecast file collection}
 
+\item{...}{parameters passed on to \code{\link{read_single}}}
+
 \item{expand}{logical, should forecast arrays be expanded if differing
 numbers of ensemble members are available in hindcast set?}
 
 \item{n.cores}{number of cores for parallelization}
-
-\item{...}{parameters passed on to \code{\link{read_single}}}
 
 \item{index}{Variable name to be read}
 
