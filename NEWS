@@ -1,3 +1,7 @@
+Changes in version 0.1.1
+
+* removed implicit parallelization for `n.cores = 1`
+
 Changes in version 0.1.0.9003
 
 * changed order of arguments in `read_ncdf` to reflect expectation (expand and n.cores is last)
