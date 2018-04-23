@@ -34,4 +34,3 @@ nc_time(nc)
   Date format
 }
 \keyword{utils}
-

@@ -24,4 +24,3 @@ colourbar(levels, colours = NULL, side = 1, units = "",
 Adds a colour bar with the specified colours and levels
 }
 \keyword{utilities}
-

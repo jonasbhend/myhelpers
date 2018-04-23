@@ -3,6 +3,7 @@
 \name{bubble_plot}
 \alias{bubble_plot}
 \alias{map_forecast}
+\alias{bubble_plot}
 \alias{skillLegend}
 \title{Plot forecasts (with forecast skill)}
 \usage{
@@ -95,4 +96,3 @@ skillLegend(tmp) ## add in inset legend for skill
 
 }
 \keyword{utilities}
-

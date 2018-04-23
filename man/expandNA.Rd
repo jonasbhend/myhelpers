@@ -3,6 +3,7 @@
 \name{expandNA}
 \alias{expandNA}
 \alias{shrink}
+\alias{shrink}
 \title{Expand arrays with missing values and subset arrays}
 \usage{
 expandNA(x, dims)
@@ -29,4 +30,3 @@ expandNA(tt, c(5,5))
 shrink(tt, c(2,2))
 
 }
-

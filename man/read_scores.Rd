@@ -48,4 +48,3 @@ verified against a climatological forecast.}
 Read skill scores to data frame
 }
 \keyword{util}
-

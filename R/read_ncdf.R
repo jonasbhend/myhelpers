@@ -33,10 +33,14 @@ read_ncdf <- function(x, expand=FALSE, n.cores = 1, ...){
 
   } else {
 
-    cl <- makeForkCluster(n.cores)
-    on.exit(stopCluser(cl))
+    if (n.cores > 1){
+      cl <- makeForkCluster(n.cores)
+      on.exit(stopCluster(cl))
 
-    ftmp <- clusterApplyLB(cl, x, read_single, ...)
+      ftmp <- clusterApplyLB(cl, x, read_single, ...)
+    } else {
+      ftmp <- lapply(x, read_single, ...)
+    }
     ## get rid of NULLs
     ftmp <- ftmp[sapply(ftmp, length) > 0]
     if (length(ftmp) == 0) return(NULL)
@@ -51,8 +55,13 @@ read_ncdf <- function(x, expand=FALSE, n.cores = 1, ...){
       fdims <- apply(fdims, 1, min)
       dfun <- shrink
     }
-    fcst <- abind(clusterApplyLB(cl, ftmp, dfun, fdims, mc.cores=n.cores),
-                  along=max(length(dim(ftmp[[1]])), 1) + 1)
+    if (n.cores > 1){
+      fcst <- abind(clusterApplyLB(cl, ftmp, dfun, fdims),
+                    along=max(length(dim(ftmp[[1]])), 1) + 1)
+    } else {
+      fcst <- abind(lapply(ftmp, dfun, fdims),
+                    along=max(length(dim(ftmp[[1]])), 1) + 1)
+    }
 
     ## reconcile attributes
     attns <- setdiff(names(attributes(ftmp[[1]])), c('dim', 'time'))
